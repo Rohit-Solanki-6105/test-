@@ -1,4 +1,4 @@
-ASHISH G PATNI 
-Gohel Tirth
-Priyanshi 
-Jannat Naik
+- ASHISH G PATNI 
+- Gohel Tirth
+- Priyanshi 
+- Jannat Naik
