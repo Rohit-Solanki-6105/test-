@@ -67,20 +67,42 @@ let sq = {
         ctx.fillRect(this.x, this.y, this.width, this.height);
     },
 
-    jump: function(){
-        if(this.y < canvas.height-150){
+    jump: function(ground_of_game){
+        if(this.y < canvas.height-(ground_of_game.height + this.height)){
             this.y_jump++;
         } 
         else{
-            this.y = canvas.height-150;
+            this.y = canvas.height-(ground_of_game.height + this.height);
         }
         this.y += this.y_jump;
 
-        if(this.y > canvas.height-150){
-            this.y = canvas.height-150;
+        if(this.y > canvas.height-(ground_of_game.height + this.height)){
+            this.y = canvas.height-(ground_of_game.height + this.height);
         }
     }
 }
+
+class game_ground{
+    constructor(x, y, height, width){
+        this.x = x;
+        this.y = y;
+        this.height = height;
+        this.width = width;
+    }
+    draw(){
+        ctx.fillStyle = "black";
+        ctx.fill()
+        ctx.fillRect(this.x, canvas.height-this.height, this.width, this.height);
+        // ctx.fillRect(0, canvas.height-100, canvas.width*1, 100);
+    }
+
+    move(){
+        this.x-=2;
+    }
+};
+
+let g1 = new game_ground(0, 100, 100, canvas.width);
+// let g2 = new game_ground(canvas.width - 30, 100, 150, canvas.width);
 
 function game(){
     requestAnimationFrame(game);
@@ -105,9 +127,11 @@ function game(){
     bg_y += bg_y_speed;
 
     //ground
-    ctx.fillStyle = "black";
-    ctx.fill()
-    ctx.fillRect(0, canvas.height-100, canvas.width*1, 100);
+    g1.draw();
+    // g2.draw();
+
+    // g1.move();
+    // g2.move();
 
     //obstacle
     obstacle1.draw();
@@ -115,7 +139,8 @@ function game(){
 
     //a square for example of main character
     sq.draw();
-    sq.jump();
+    sq.jump(g1);
+    // sq.jump(g2);
 
     //obstacle hit
     if(obstacle1.x < sq.x+50 && obstacle1.y < sq.y && obstacle1.x+obstacle1.width > sq.x){ 
@@ -128,7 +153,7 @@ window.addEventListener("keydown", function(e){
     switch(e.key){
         case " ":
             bg_y_speed = -4;
-            sq.y_jump = -10;
+            sq.y_jump = -15;
             break;
     }
 })
