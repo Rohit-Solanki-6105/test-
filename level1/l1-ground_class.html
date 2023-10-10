@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>level 1</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        body{
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        canvas{
+            border: 1px solid black;
+        }
+        </style>
+</head>
+<body>
+    <canvas></canvas>
+</body>
+<script>
+
+const canvas = document.querySelector("canvas");
+const ctx = canvas.getContext('2d');
+canvas.height = window.innerHeight - 100;
+canvas.width = window.innerWidth - 100;
+    
+let g_speed = 0;
+const main_character = {
+    x: 100,
+    y: 100,
+    height: 50,
+    width: 50,
+
+    walk_speed: 3,
+
+    jump_val: 0,
+
+    draw(){
+        ctx.fillStyle = "red";
+        ctx.fill();
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+
+        // this.y += this.jump_val; // for jump true run
+    },
+}
+
+// let player = main_character;
+class Ground{
+    constructor(x, y, height, width){
+        this.x = x;
+        this.y = y;
+        this.height = height;
+        this.width = width;
+    }
+    draw(){
+        ctx.fillStyle = "black";
+        ctx.fill();
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+    onground(player){
+        if(player.x+player.width >= this.x && player.x < this.x+this.width){
+            if(player.y+player.height >= this.y){
+                player.y = this.y - player.height;
+                g_speed = 0;
+            }
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+}
+
+let g1 = new Ground(10, canvas.height-100, 100, 200);
+let g2 = new Ground(400, canvas.height-70, 70, 200);
+
+function gameLoop(){
+    requestAnimationFrame(gameLoop);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    main_character.draw();
+    
+    // gravity
+    if(main_character.y + main_character.height < canvas.height){
+        main_character.y+=g_speed;
+        g_speed++;
+    } else{
+        g_speed = 0;
+        main_character.y = canvas.height-main_character.height;
+    }
+    
+    // falling end from ground
+    if(main_character.y+main_character.height >= canvas.height){
+        alert("fall");
+    }
+    g1.draw();
+    g1.onground(main_character);
+
+    g2.draw();
+    g2.onground(main_character);
+
+    // main_character.jump();
+}
+
+gameLoop();
+
+window.addEventListener("keydown", function(e){
+    // console.log(e);
+    switch(e.key){
+        case ' ':
+            g_speed = -30; // reversing the gravity for main character
+            // main_character.jump_val = -50;
+            // main_character.jump()
+            // main_character.jump();
+            // main_character.y--;
+            // console.log(e.key);
+            break;
+        
+        case "ArrowRight":
+            // main_character.x+= main_character.walk_speed;
+            main_character.x+=30;
+            break;
+
+        case "ArrowLeft":
+            main_character.x-=main_character.walk_speed;
+            break;
+    }
+});
+
+</script>
+</html>
