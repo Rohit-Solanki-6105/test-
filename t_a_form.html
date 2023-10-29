@@ -95,7 +95,7 @@ form.addEventListener('submit', e=>{
     fetch(scriptURL, {method: 'POST', body: new FormData(form)})
     .then(response => {
         console.log("Success", response); 
-        document.querySelector("dialog").showModal(); // open dislog box
+        document.querySelector("dialog").showModal(); // open dialog box
     })
     .catch(error => console.error("Error!", error.message))
 })
