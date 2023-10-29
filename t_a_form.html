@@ -63,11 +63,26 @@
         dialog::backdrop{
             background-color: rgba(0, 0, 0, 0.5);
         }
+        #load{
+            background-color: transparent;
+            background-image: none;
+            padding: 0;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
-    <dialog close>
+    <dialog id="load" close>
+        <img src="https://readme-typing-svg.herokuapp.com?font=&weight=500&size=20&pause=200&center=true&width=150&lines=Loading..." alt="Loading...">
+    </dialog>
+    <dialog id="success" close>
         <h3>Success</h3>
+        <form method="dialog">
+            <button onclick="location.reload()">OK</button>
+        </form>
+    </dialog>
+    <dialog id="error" close>
+        <h3>Error</h3>
         <form method="dialog">
             <button onclick="location.reload()">OK</button>
         </form>
@@ -86,18 +101,26 @@
 </body>
 <script>
 document.querySelector("#date").innerHTML = `${new Date().getDate()}-${new Date().getMonth()+1}-${new Date().getFullYear()}`;
-// console.log(new Date());
+
 const scriptURL = "https://script.google.com/macros/s/AKfycbzfvSzMjmM0HKNjd_L3VvQiqoFXmrjD2tCrGKWZ9hUxTqDGIsvAOimFJB0xyKIjOWXSPQ/exec";
 const form = document.forms['submit-to--google-sheet']
 
 form.addEventListener('submit', e=>{
     e.preventDefault()
+    document.querySelector("#load").showModal(); // show load dialog box
+    
     fetch(scriptURL, {method: 'POST', body: new FormData(form)})
     .then(response => {
+        document.querySelector("#load").close();
         console.log("Success", response); 
-        document.querySelector("dialog").showModal(); // open dialog box
+        document.querySelector("#success").showModal(); // open success dialog box
     })
-    .catch(error => console.error("Error!", error.message))
+    .catch(error => {
+        document.querySelector("#load").close();
+        console.error("Error!", error.message);
+        document.querySelector("#error").showModal(); // open error dialog box
+        document.querySelector("#error").innerHTML += error.message;
+    })
 })
 </script>
 </html>
