@@ -73,12 +73,12 @@
 </head>
 <body>
     <dialog id="load" close>
-        <img src="https://readme-typing-svg.herokuapp.com?font=&weight=500&size=20&pause=200&center=true&width=150&lines=Loading..." alt="Loading...">
+        <img src="https://readme-typing-svg.herokuapp.com?font=&weight=500&size=20&pause=200&center=true&width=150&lines=Loading..." alt="">
     </dialog>
     <dialog id="success" close>
         <h3>Success</h3>
         <form method="dialog">
-            <button onclick="location.reload()">OK</button>
+            <button onclick="success_function()">OK</button>
         </form>
     </dialog>
     <dialog id="error" close>
@@ -98,17 +98,67 @@
         <br>
         <button type="submit">Submit</button>
     </form>
+    <div id="svg-container" style="display: none;"></div>
 </body>
 <script>
 document.querySelector("#date").innerHTML = `${new Date().getDate()}-${new Date().getMonth()+1}-${new Date().getFullYear()}`;
-
+// console.log(new Date());
 const scriptURL = "https://script.google.com/macros/s/AKfycbzfvSzMjmM0HKNjd_L3VvQiqoFXmrjD2tCrGKWZ9hUxTqDGIsvAOimFJB0xyKIjOWXSPQ/exec";
 const form = document.forms['submit-to--google-sheet']
 
+function createSVG() {
+    const firstName = document.getElementById('firstname').value;
+    const lastName = document.getElementById('lastname').value;
+    const course = document.getElementById('course').value;
+    const rollNo = document.getElementById('roll_no').value;
+    const email = document.getElementById('email').value;
+    const date = new Date().toLocaleDateString(); // Get current date
+    const nowtime = new Date().toLocaleTimeString(); // get time
+
+    // Prepare SVG content based on form data with inline styles
+    const svgContent = `
+        <svg width="230" height="250" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="url(#grad)" />
+            <text x="10" y="20" font-size="18" fill="white">Tech Meeting</text>
+            <text x="10" y="40" font-size="18" fill="white">Attended by</text>
+            <rect x="0" y="52" width="230" height="2" fill="white" />
+            <text x="10" y="70" font-size="14" fill="white">Date-Time: ${date} - ${nowtime}</text>
+            <text x="10" y="100" font-size="14" fill="white">Full Name: ${firstName} ${lastName}</text>
+            <text x="10" y="120" font-size="14" fill="white">Course: ${course}</text>
+            <text x="10" y="140" font-size="14" fill="white">Roll No: ${rollNo}</text>
+            <text x="10" y="160" font-size="14" fill="white">Email: ${email}</text>
+            <text x="1" y="230" font-size="10" fill="white">by Rohit Solanki</text>
+            
+            <defs>
+                <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:rgb(7,39,66);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(47,86,142);stop-opacity:1" />
+                </linearGradient>
+            </defs>
+        </svg>
+    `;
+
+    // Set the SVG content to the SVG container
+    const svgContainer = document.getElementById('svg-container');
+    svgContainer.innerHTML = svgContent;
+
+    // Optionally, you can also download the SVG as a file
+    const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' });
+    const svgURL = URL.createObjectURL(svgBlob);
+    const downloadLink = document.createElement('a');
+    downloadLink.href = svgURL;
+    downloadLink.download = 'data.svg';
+    downloadLink.click();
+}
+
+function success_function(){
+    createSVG();
+    location.reload();
+}
+
 form.addEventListener('submit', e=>{
     e.preventDefault()
-    document.querySelector("#load").showModal(); // show load dialog box
-    
+    document.querySelector("#load").showModal();
     fetch(scriptURL, {method: 'POST', body: new FormData(form)})
     .then(response => {
         document.querySelector("#load").close();
