@@ -101,7 +101,7 @@
     <div id="svg-container" style="display: none;"></div>
 </body>
 <script>
-document.querySelector("#date").innerHTML = new Date().toLocaleDateString();
+document.querySelector("#date").innerHTML = `${new Date().getDate()}-${new Date().getMonth()+1}-${new Date().getFullYear()}`;
 // console.log(new Date());
 const scriptURL = "https://script.google.com/macros/s/AKfycbzfvSzMjmM0HKNjd_L3VvQiqoFXmrjD2tCrGKWZ9hUxTqDGIsvAOimFJB0xyKIjOWXSPQ/exec";
 const form = document.forms['submit-to--google-sheet']
@@ -117,17 +117,17 @@ function createSVG() {
 
     // Prepare SVG content based on form data with inline styles
     const svgContent = `
-        <svg width="230" height="250" xmlns="http://www.w3.org/2000/svg">
+        <svg width="250" height="270" xmlns="http://www.w3.org/2000/svg">
             <rect width="100%" height="100%" fill="url(#grad)" />
             <text x="10" y="20" font-size="18" fill="white">Tech Meeting</text>
             <text x="10" y="40" font-size="18" fill="white">Attended by</text>
-            <rect x="0" y="52" width="230" height="2" fill="white" />
+            <rect x="5" y="52" width="240" height="2" fill="white" />
             <text x="10" y="70" font-size="14" fill="white">Date-Time: ${date} - ${nowtime}</text>
             <text x="10" y="100" font-size="14" fill="white">Full Name: ${firstName} ${lastName}</text>
             <text x="10" y="120" font-size="14" fill="white">Course: ${course}</text>
             <text x="10" y="140" font-size="14" fill="white">Roll No: ${rollNo}</text>
             <text x="10" y="160" font-size="14" fill="white">Email: ${email}</text>
-            <text x="1" y="230" font-size="10" fill="white">by Rohit Solanki</text>
+            <text x="5" y="230" font-size="10" fill="white">by Rohit Solanki</text>
             
             <defs>
                 <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -147,7 +147,7 @@ function createSVG() {
     const svgURL = URL.createObjectURL(svgBlob);
     const downloadLink = document.createElement('a');
     downloadLink.href = svgURL;
-    downloadLink.download = 'data.svg';
+    downloadLink.download = 'Attended.svg';
     downloadLink.click();
 }
 
