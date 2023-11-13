@@ -111,12 +111,12 @@ app.stage.addChild(background);
 const character = new Character(app, 100, 100);
 
 const platforms = [
-    new Platform(app, 0, 400, 150),
-    new Platform(app, 200, 300, 200),
-    new Platform(app, 400, 400, 150),
-    new Platform(app, 700, 200, 140),
-    new Platform(app, 800, 300, 100),
-    new Platform(app, 1000, 450, 200),
+    new Platform(app, 0, 480, 15000),
+    // new Platform(app, 200, 300, 200),
+    // new Platform(app, 400, 400, 150),
+    // new Platform(app, 700, 200, 140),
+    // new Platform(app, 800, 300, 100),
+    // new Platform(app, 1000, 450, 200),
     // Add more platforms as needed
 ];
 
@@ -157,6 +157,10 @@ document.addEventListener('keydown', (event) => {
     if (keys['ArrowRight']){
         character.run_forward();
         console.log(keys);
+        if(character.sprite.x >= (obstacle.width+40))
+        {
+            alert("OUT");
+        }
     }
 
     if (keys['ArrowLeft']){
@@ -168,3 +172,38 @@ document.addEventListener('keydown', (event) => {
 document.addEventListener('keyup', (event) => {
     keys[event.key] = false;
 });
+
+
+
+//obstacle
+
+const obstacleTexture = PIXI.Texture.from('middle_lane_rock1_1.png');
+const obstacle = new PIXI.Sprite(obstacleTexture);
+
+// Set the initial position of the obstacle
+obstacle.x = 250; // Replace with the desired x coordinate
+obstacle.y = 350; // Replace with the desired y coordinate
+
+app.stage.addChild(obstacle);
+
+// Update function
+app.ticker.add(() => {
+    if (character.sprite.x > app.screen.width / 2) {
+        // Move the background and platforms in the opposite direction of the character
+        const movementSpeed = 10; // Adjust the speed as needed
+
+        background.x -= 0.4;
+        platforms.forEach(platform => {
+            platform.sprite.x -= movementSpeed;
+        });
+
+        // Move the obstacle at a slower speed to create a parallax effect
+        obstacle.x -= movementSpeed * 0.5;
+
+        // Reset the character's x position
+        character.sprite.x = app.screen.width / 2;
+    }
+});
+
+
+
