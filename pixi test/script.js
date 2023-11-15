@@ -71,14 +71,8 @@ class Character {
         if(this.sprite.y >= window.innerHeight){
             this.decreaseLife(101);
         }
+        
         // obstacles
-        // for (const obstacle of obstacles) {
-        //     if (this.isCollidingWith(obstacle.getBounds())) {
-        //         this.decreaseLife(1);
-        //         // alert('Character touched the obstacle!');
-        //         break;
-        //     }
-        // }
         for (const obstacle of obstacles) {
             if (this.isCollidingWith(obstacle.getBounds())) {
                 this.decreaseLife(0.2); // Adjust the amount to decrease life as needed
@@ -289,6 +283,71 @@ class Knife {
 }
 
 
+class Enemy {
+    constructor(app, x, y, range, img, canJump = false, movementType = 'forward') {
+        this.app = app;
+        this.sprite = new PIXI.Sprite(PIXI.Texture.from(img));
+        this.sprite.anchor.set(0.5);
+        this.sprite.x = x;
+        this.sprite.y = y;
+        this.speed = 3;
+        this.canJump = canJump;
+        this.jumpForce = -8;
+        this.isJumping = false;
+        this.jumpCooldown = Math.random() * 300 + 100; // Random jump cooldown
+
+        // Specify the movement type: 'forward' or 'side'
+        this.movementType = movementType;
+
+        // Additional parameters for side movement
+        this.sideSpeed = 10;
+        this.sideDirection = -1; // Start with a specific direction
+        // Additional parameters for continuous forward movement
+        this.continuousForwardSpeed = 10;
+
+        this.penX = x; // Set the initial value to the x-coordinate of the enemy
+        this.penRange = range;
+
+        app.stage.addChild(this.sprite);
+    }
+
+    update() {
+        // Move horizontally
+        this.sprite.x += this.speed;
+
+        // Optionally, make the enemy jump
+        if (this.canJump) {
+            this.jumpCooldown--;
+
+            if (this.jumpCooldown <= 0) {
+                this.jump();
+                this.jumpCooldown = Math.random() * 300 + 100; // Reset jump cooldown
+            }
+        }
+        
+        if (this.movementType === 'forward') {
+            // Move continuously forward
+            this.sprite.x += this.continuousForwardSpeed;
+        } else if (this.movementType === 'side') {
+            // Move side by side in a pendulum manner
+            this.sprite.x += this.sideSpeed * this.sideDirection;
+    
+            // Reverse direction when hitting the screen boundary
+            if (this.sideDirection === -1 && this.sprite.x <= this.penX - this.penRange) {
+                this.sideDirection = 1;
+            } else if (this.sideDirection === 1 && this.sprite.x >= this.penX + this.penRange) {
+                this.sideDirection = -1;
+            }
+        }
+    }
+
+    jump() {
+        if (!this.isJumping) {
+            this.isJumping = true;
+            this.sprite.y += this.jumpForce;
+        }
+    }
+}
 
 const app = new PIXI.Application({
     width: innerWidth,
@@ -341,6 +400,14 @@ const obstacles = [
 //knife
 const knife = new Knife(app, 100, app.screen.height / 2);
 
+// enimies
+const enemies = [
+    new Enemy(app, 200, 400, 0, 'e1.png'),
+    new Enemy(app, 500, 300, 0, 'e1.png', true), // This enemy can jump
+    new Enemy(app, 800, 400, 100, 'e1.png', true, 'side'),
+    new Enemy(app, 1000, 400, 250, 'e1.png', false, 'side')
+];
+
 //main loop
 app.ticker.add(() => {
     if (character.sprite.x > app.screen.width / 2) {
@@ -366,6 +433,17 @@ app.ticker.add(() => {
     character.update(platforms, obstacles);
     
     knife.update();
+
+    //for enimies
+    for (const enemy of enemies) {
+        enemy.update();
+
+        // Check for collisions with the character
+        if (character.isCollidingWith(enemy.sprite.getBounds())) {
+            // Handle collision with enemy (e.g., decrease character's life)
+            // character.decreaseLife(10);
+        }
+    }
 });
 
 
