@@ -19,6 +19,12 @@ class Character {
         this.lifeBar = new PIXI.Graphics();
         this.lifeBar.x = 30;
         this.lifeBar.y = 30;
+        this.lifeNumber = 3;
+
+        // Create the life number text
+        this.lifeNumberText = new PIXI.Text(`X ${this.lifeNumber}`, { fontSize: 20, fill: 0x000000 });
+        this.lifeNumberText.x = 30; // Adjust the position
+        this.lifeNumberText.y = 30;
         this.updateLifeBar();
 
         // Blinking variables
@@ -26,7 +32,12 @@ class Character {
         this.blinkCounter = 0;
         this.isBlinking = false;
 
+        // default knifes numbers
+        this.knifeCount = 5;
+
         app.stage.addChild(this.lifeBar);
+        
+        app.stage.addChild(this.lifeNumberText);
     }
 
     jump() {
@@ -133,6 +144,11 @@ class Character {
     updateLifeBar() {
         const barWidth = 100;
         const barHeight = 10;
+        
+        this.lifeNumberText.text = `X ${this.lifeNumber}`;
+        // this.lifeNumberText = new PIXI.Text(`X ${this.lifeNumber}`, { fontSize: 20, fill: 0x000000 });
+        this.lifeNumberText.y = this.lifeBar.y + barHeight + 10;
+        this.lifeNumberText.x = this.lifeBar.x + 150;
 
         // Clear the previous graphics
         this.lifeBar.clear();
@@ -164,30 +180,89 @@ class Character {
             this.currentLife = 0;
         }
 
-        this.updateLifeBar();
 
-        // Optionally, add a game over condition when the life reaches 0
-        if (this.currentLife <= 0) {
-            // Game over logic
-            console.log("Game Over!");
-            // alert("Game Over!");
-            this.gameover();
+        if (this.currentLife <= 0 && this.lifeNumber > 0) {
+            this.lifeNumber--;
+    
+            if (this.lifeNumber > 0) {
+                // Player has more lives left
+                // Create a black overlay
+                const blackOverlay = new PIXI.Graphics();
+                blackOverlay.beginFill(0x000000);
+                blackOverlay.drawRect(0, 0, app.screen.width, app.screen.height);
+                blackOverlay.endFill();
+                app.stage.addChild(blackOverlay);
+
+                // Hide the character during the black screen
+                this.sprite.visible = false;
+
+                // Display the number of remaining lives
+                const lifeText = new PIXI.Text(`Remaining Lives: ${this.lifeNumber}`, {
+                    fontSize: 30,
+                    fill: 0xFFFFFF,
+                    align: 'center'
+                });
+                lifeText.x = app.screen.width / 2 - lifeText.width / 2;
+                lifeText.y = app.screen.height / 2 - lifeText.height / 2;
+                app.stage.addChild(lifeText);
+
+                // Wait for 2 seconds (adjust the duration as needed)
+                setTimeout(() => {
+                    // Remove the black overlay and life text
+                    app.stage.removeChild(blackOverlay);
+                    app.stage.removeChild(lifeText);
+
+                    // Make the character visible again
+                    this.sprite.visible = true;
+                    this.sprite.x = 100;
+                }, 2000); // 2000 milliseconds = 2 seconds
+                    
+                // Player has more lives left
+                this.sprite.y = 100;
+                this.currentLife = 100;
+    
+                // Update the life number text
+                this.lifeNumberText.text = `X ${this.lifeNumber}`;
+            } else {
+                // No more lives, trigger game over
+                this.gameover();
+            }
+        }
+
+        
+        this.updateLifeBar();
+    }
+
+    gameover() {
+        // Create a black overlay
+        const blackOverlay = new PIXI.Graphics();
+        blackOverlay.beginFill(0x000000);
+        blackOverlay.drawRect(0, 0, app.screen.width, app.screen.height);
+        blackOverlay.endFill();
+        app.stage.addChild(blackOverlay);
+    
+        // Display the number of remaining lives
+        const gameOverText = new PIXI.Text(`Game Over\nRemaining Lives: ${this.lifeNumber}`, {
+            fontSize: 30,
+            fill: 0xFFFFFF,
+            align: 'center'
+        });
+        gameOverText.x = app.screen.width / 2 - gameOverText.width / 2;
+        gameOverText.y = app.screen.height / 2 - gameOverText.height / 2;
+        app.stage.addChild(gameOverText);
+    }
+
+    throwKnife() {
+        if (this.knifeCount > 0) {
+            // Only throw a knife if there are knives available
+            const knife = new Knife(app, this.sprite.x, this.sprite.y);
+            this.knifeCount--;
+
+            // You may want to keep track of the knives in an array or handle their logic
+            // in the Knife class (e.g., removing the knife when it goes off-screen)
+            knives.push(knife);
         }
     }
-
-    gameover(){
-        alert("Game Over");
-        // this.sprite.x = 100;
-    }
-    // onside(platforms){
-    //     for (const platform of platforms) {
-    //         if (this.isOnPlatform(platform.getBounds())) {
-    //             // Collision detected, stop falling
-    //             if(platform.sprite.x)
-    //             break;
-    //         }
-    //     }
-    // }
 }
 
 class Platform {// also can be used for ground
@@ -254,6 +329,8 @@ class Knife {
         this.sprite.anchor.set(0.5);
         this.sprite.x = x;
         this.sprite.y = y;
+        this.sprite.height = 70;
+        this.sprite.width = 100;
         this.speed = 10;
         this.isActive = false;
     }
@@ -446,7 +523,7 @@ const obstacles = [
 ];
 
 //knife
-const knife = new Knife(app, 100, app.screen.height / 2);
+const knife = new Knife(app, 0, app.screen.height / 2);
 
 // enimies
 const enemies = [
@@ -535,6 +612,11 @@ document.addEventListener('keydown', (event) => {
 
 
     if (keys['a'] || keys['A']) {
+        knife.sprite.x = character.sprite.x;
+        knife.sprite.y = character.sprite.y;
+
+        character.knifes--;
+
         knife.throwKnife();
     }
 });
