@@ -6,7 +6,7 @@ class Character {
         this.sprite.y = y;
         this.velocityY = 0;
         this.isJumping = false;
-        this.jumpForce = -8;
+        this.jumpForce = -10;
         this.run_speed = 10;
 
         app.stage.addChild(this.sprite);
@@ -88,6 +88,24 @@ class Character {
             if (this.isCollidingWith(obstacle.getBounds())) {
                 this.decreaseLife(0.2); // Adjust the amount to decrease life as needed
                 
+                // Toggle the blinking effect
+                this.isBlinking = true;
+                this.blinkCounter = 0;
+                
+                // Optionally, you may want to remove the obstacle from the stage
+                // app.stage.removeChild(obstacle.sprite);
+                break;
+            }
+            else{ 
+                this.isBlinking = false;
+                this.blinkCounter = 0;
+            }
+        }
+
+        for (const obstacle of enemies) {
+            if (this.isCollidingWith(obstacle.getBounds())) {
+                this.decreaseLife(0.2); // Adjust the amount to decrease life as needed
+                alert("hi")
                 // Toggle the blinking effect
                 this.isBlinking = true;
                 this.blinkCounter = 0;
@@ -405,11 +423,7 @@ class Enemy {
     }
 
     update(platforms) {
-
-
-        // Move horizontally
-        this.sprite.x += this.speed;
-
+        
         // Optionally, make the enemy jump
         if (this.canJump) {
             this.jumpCooldown--;
@@ -420,9 +434,19 @@ class Enemy {
             }
         }
         
+        if(this.sprite.x <= this.app.screen.width){
+            this.continuousForwardSpeed = 10;
+            this.sideSpeed = 10;
+        }
+        else{
+            this.continuousForwardSpeed = 0;
+            this.sideSpeed = 0;
+        }
+
         if (this.movementType === 'forward') {
             // Move continuously forward
             this.sprite.x -= this.continuousForwardSpeed;
+            
         } else if (this.movementType === 'side') {
             // Move side by side in a pendulum manner
             this.sprite.x += this.sideSpeed * this.sideDirection;
@@ -477,7 +501,7 @@ class Enemy {
 const app = new PIXI.Application({
     width: innerWidth,
     height: innerHeight,
-    backgroundColor: 0x1099bb,
+    backgroundColor: 0x000000,
 });
 
 document.body.appendChild(app.view);
@@ -511,6 +535,9 @@ const platforms = [
     new Platform(app, 700, 200, 140),
     new Platform(app, 800, 300, 100),
     new Platform(app, 1000, 450, 200),
+    new Platform(app, 1300, 600, 140),
+    new Platform(app, 1500, 500, 100),
+    new Platform(app, 1800, 450, 500)
     // Add more platforms as needed
 ];
 
@@ -527,10 +554,12 @@ const knife = new Knife(app, 0, app.screen.height / 2);
 
 // enimies
 const enemies = [
-    new Enemy(app, 800, 100, 100, 100, 0, 'e1.png', false, 'forward', false),
+    new Enemy(app, 1600, 100, 100, 100, 0, 'e1.png', false, 'forward', false),
     new Enemy(app, 500, 100, 50, 50, 0, 'e1.png', true), // This enemy can jump
     new Enemy(app, 800, 100, 100, 100, 100, 'e1.png', true, 'side'),
-    new Enemy(app, 1000, 100, 50, 50, 250, 'e1.png', false, 'side', false)
+    new Enemy(app, 1000, 100, 50, 50, 250, 'e1.png', false, 'side', false),
+    new Enemy(app, 1800, 100, 100, 100, 300, 'e1.png', false, 'side', false),
+    new Enemy(app, 1900, 100, 100, 100, 100, 'e1.png', false, 'side', true)
 ];
 
 //main loop
@@ -554,6 +583,8 @@ app.ticker.add(() => {
 
         enemies.forEach(enemy => {
             enemy.penX -= character.run_speed;
+            enemy.sprite.x -= character.run_speed;
+            // console.log(enemy.sprite.x);
         })
 
         character.sprite.x = app.screen.width / 2;
@@ -566,6 +597,7 @@ app.ticker.add(() => {
     //for enimies
     for (const enemy of enemies) {
         enemy.update(platforms);
+        
 
         // Check for collisions with the character
         if (character.isCollidingWith(enemy.sprite.getBounds())) {
