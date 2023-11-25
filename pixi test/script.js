@@ -6,7 +6,7 @@ class Character {
         this.sprite.y = y;
         this.velocityY = 0;
         this.isJumping = false;
-        this.jumpForce = -10;
+        this.jumpForce = -8
         this.run_speed = 10;
 
         app.stage.addChild(this.sprite);
@@ -55,7 +55,7 @@ class Character {
         this.sprite.x -= this.run_speed;
     }
 
-    update(platforms, obstacles, enemies) {
+    update(platforms, obstacles, enemies, bricks) {
 
         this.velocityY += 0.3; // Gravity
 
@@ -136,6 +136,72 @@ class Character {
         }
         // this.lifeBar.x = this.sprite.x - this.sprite.width - 10;
         // this.lifeBar.y = this.sprite.y - this.sprite.height - 50;
+
+        for (const brick of bricks) {
+            if (this.isCollidingWith(brick.getBounds())) {
+                if(brick.canBreak){
+                    app.stage.removeChild(brick.sprite);
+                }
+                else{
+                    // Collision detected, stop falling
+                    this.velocityY = 3;
+                    this.isJumping = true;
+                    onGround = true;
+                    this.run_speed = 0;
+                    
+                    // this.sprite.y = brick.getBounds().y - this.sprite.height / 2;
+                    break;
+                }
+            }        
+        }
+
+        // for (let i=0; i< bricks.length; i++) {
+        //     const brick = bricks[i];
+            
+        //     if(this.isCollidingWith(brick.getBounds())){
+        //         if(brick.canBreak){
+        //             app.stage.removeChild(brick.sprite);
+        //             bricks.splice(i, 1);
+        //         }
+        //         else{
+
+        //             //left
+        //             if(this.sprite.x + this.sprite.width / 2 >= brick.sprite.x){
+        //                 // alert(true);
+        //                 this.run_speed = 0;
+        //                 this.sprite.x = brick.sprite.x - (this.sprite.width / 2);
+        //             }
+        //             else{
+        //                 this.run_speed = 10;
+        //             }
+
+        //             //right
+        //             if(this.sprite.x - this.sprite.width / 2 < brick.sprite.x + brick.sprite.width){
+        //                 // alert(true);
+        //                 this.run_speed = 0;
+        //                 this.sprite.x = brick.sprite.x + brick.sprite.width + (this.sprite.width / 2);
+        //             }
+        //             else{
+        //                 this.run_speed = 10;
+        //             }
+
+        //             //top
+        //             if(this.sprite.y + this.sprite.height / 2 >= brick.sprite.y){
+        //                 this.velocityY = 0;
+        //                 this.isJumping = false;
+        //                 this.sprite.y = brick.sprite.y - (this.sprite.height / 2);
+        //                 onGround = true;
+        //             }
+                    
+        //             //bottom
+        //             if(this.sprite.y - this.sprite.height / 2 <= brick.sprite.y + brick.sprite.height){
+        //                 // alert('true');
+        //                 this.velocityY = 3;
+        //             }
+        //         }
+        //     }
+        // }
+        
     }
 
     
@@ -157,6 +223,119 @@ class Character {
             this.sprite.x - this.sprite.width / 2 < platform.x + platform.width
         );
     }
+    // isCollidingBrick(brick) {
+    //     // Define a range for collision
+    //     const collisionRange = 10; // Adjust the range as needed
+    
+    //     const characterBounds = {
+    //         left: this.sprite.x - this.sprite.width / 2 + collisionRange,
+    //         right: this.sprite.x + this.sprite.width / 2 - collisionRange,
+    //         top: this.sprite.y - this.sprite.height / 2 + collisionRange,
+    //         bottom: this.sprite.y + this.sprite.height / 2 - collisionRange,
+    //     };
+    
+    //     const brickBounds = {
+    //         left: brick.x,
+    //         right: brick.x + brick.width,
+    //         top: brick.y,
+    //         bottom: brick.y + brick.height,
+    //     };
+    
+    //     const isColliding = !(
+    //         characterBounds.right < brickBounds.left ||
+    //         characterBounds.left > brickBounds.right ||
+    //         characterBounds.bottom < brickBounds.top ||
+    //         characterBounds.top > brickBounds.bottom
+    //     );
+    
+    //     if (isColliding) {
+    //         // Determine collision direction
+    //         const horizontalCollision = characterBounds.bottom > brickBounds.top && characterBounds.top < brickBounds.bottom;
+    //         const verticalCollision = characterBounds.right > brickBounds.left && characterBounds.left < brickBounds.right;
+    
+    //         if (horizontalCollision) {
+    //             // Horizontal collision
+    //             if (this.sprite.x > brick.x && this.sprite.x - brick.x < collisionRange) {
+    //                 // Colliding from the left
+    //                 this.collisionDirection = 'left';
+    //                 // this.sprite.x = brick.x + brick.width / 2 + this.sprite.width / 2 - collisionRange;
+    //             } else if (this.sprite.x < brick.x && brick.x - this.sprite.x < collisionRange) {
+    //                 // Colliding from the right
+    //                 this.collisionDirection = 'right';
+    //                 // this.sprite.x = brick.x - brick.width / 2 - this.sprite.width / 2 + collisionRange;
+    //             }
+    //         }
+    
+    //         if (verticalCollision) {
+    //             // Vertical collision
+    //             if (this.sprite.y > brick.y && this.sprite.y - brick.y < collisionRange) {
+    //                 // Colliding from the top
+    //                 this.collisionDirection = 'top';
+    //                 // this.sprite.y = brick.y + brick.height / 2 + this.sprite.height / 2 - collisionRange;
+    //             } else if (this.sprite.y < brick.y && brick.y - this.sprite.y < collisionRange) {
+    //                 // Colliding from the bottom
+    //                 this.collisionDirection = 'bottom';
+    //                 // this.sprite.y = brick.y - brick.height / 2 - this.sprite.height / 2 + collisionRange;
+    //             }
+    //         }
+    //     }
+    
+    //     return isColliding;
+    // }
+    
+    // isCollidingBrick(obstacle) {
+    //     const characterBounds = {
+    //         left: this.sprite.x - this.sprite.width / 2,
+    //         right: this.sprite.x + this.sprite.width / 2,
+    //         top: this.sprite.y - this.sprite.height / 2,
+    //         bottom: this.sprite.y + this.sprite.height / 2,
+    //     };
+    
+    //     const obstacleBounds = {
+    //         left: obstacle.x,
+    //         right: obstacle.x + obstacle.width,
+    //         top: obstacle.y,
+    //         bottom: obstacle.y + obstacle.height,
+    //     };
+    
+    //     const isColliding = !(
+    //         characterBounds.right < obstacleBounds.left ||
+    //         characterBounds.left > obstacleBounds.right ||
+    //         characterBounds.bottom < obstacleBounds.top ||
+    //         characterBounds.top > obstacleBounds.bottom
+    //     );
+    
+    //     if (isColliding) {
+    //         // Determine collision direction
+    //         const horizontalCollision = characterBounds.bottom > obstacleBounds.top && characterBounds.top < obstacleBounds.bottom;
+    //         const verticalCollision = characterBounds.right > obstacleBounds.left && characterBounds.left < obstacleBounds.right;
+    
+    //         if (horizontalCollision) {
+    //             // Horizontal collision
+    //             if (this.sprite.x < obstacle.x - 2) {
+    //                 // Colliding from the left
+    //                 this.collisionDirection = 'left';
+    //             } else {
+    //                 // Colliding from the right
+    //                 this.collisionDirection = 'right';
+    //             }
+    //         }
+    
+    //         if (verticalCollision) {
+    //             // Vertical collision
+    //             if (this.sprite.y < obstacle.y) {
+    //                 // Colliding from the top
+    //                 this.collisionDirection = 'top';
+    //             } else {
+    //                 // Colliding from the bottom
+    //                 this.collisionDirection = 'bottom';
+    //             }
+    //         }
+    //     }
+    
+    //     return isColliding;
+    // }
+    
 
     
     updateLifeBar() {
@@ -498,6 +677,33 @@ class Enemy {
     }
 }
 
+class Brick {// also can be used for ground
+    constructor(app, x, y, height, width, breakable = false) {
+        this.sprite = new PIXI.Graphics();
+        this.sprite.beginFill(0xFF5511);
+        this.sprite.drawRect(0, 0, width, 20);
+        this.sprite.endFill();
+        this.sprite.x = x;
+        this.sprite.y = y;
+        this.width = width;
+        this.height = height;
+        this.height = 20;
+        this.canBreak = breakable;
+
+        app.stage.addChild(this.sprite);
+    }
+
+    getBounds() {
+        return {
+            x: this.sprite.x,
+            y: this.sprite.y,
+            width: this.width,
+            height: this.height,
+        };
+    }
+}
+
+
 const app = new PIXI.Application({
     width: innerWidth,
     height: innerHeight,
@@ -526,7 +732,7 @@ const clouds = [
     new Cloud(app, "clouds/cloud4.png", 900, 100)
 ];
 
-const character = new Character(app, 100, 100);
+const character = new Character(app, 0, 100);
 
 const platforms = [
     new Platform(app, 0, 400, 150),
@@ -562,6 +768,13 @@ const enemies = [
     new Enemy(app, 1900, 100, 100, 100, 100, 'e1.png', false, 'side', true)
 ];
 
+const bricks = [
+    new Brick(app, 100, 200, 200, 100, false),
+    new Brick(app, 300, 200, 200, 100, true)
+];
+
+
+const keys = {};
 //main loop
 app.ticker.add(() => {
     if (character.sprite.x > app.screen.width / 2) {
@@ -587,10 +800,14 @@ app.ticker.add(() => {
             // console.log(enemy.sprite.x);
         })
 
+        bricks.forEach(brick => {
+            brick.sprite.x -= character.run_speed;
+        })
+
         character.sprite.x = app.screen.width / 2;
     }
 
-    character.update(platforms, obstacles, enemies);
+    character.update(platforms, obstacles, enemies, bricks);
     
     knife.update();
 
@@ -602,33 +819,17 @@ app.ticker.add(() => {
         // Check for collisions with the character
         if (character.isCollidingWith(enemy.sprite.getBounds())) {
             // Handle collision with enemy (e.g., decrease character's life)
-            // character.decreaseLife(10);
+            // character.decreaseLife(0.2);
         }
     }
 
-});
 
-
-// events
-const keys = {};
-document.addEventListener('keydown', (event) => {
-    keys[event.key] = true;
-
-    
+    // key presses
     if(keys['x'] || keys['X']){
         character.run_speed = 20;
     }
     else{
         character.run_speed = 10;
-    }
-    
-    if (keys['ArrowRight'] && (keys[' '] || keys['ArrowUp'])){
-        character.run_forward();
-        character.jump();
-    }
-    if (keys['ArrowLeft'] && (keys[' '] || keys['ArrowUp'])){
-        character.run_backward();
-        character.jump();
     }
 
     if (keys[' '] || keys['ArrowUp']) {
@@ -651,6 +852,15 @@ document.addEventListener('keydown', (event) => {
 
         knife.throwKnife();
     }
+
+    // Make sure the animated sprite is being updated
+    app.renderer.render(app.stage);
+});
+
+
+// events
+document.addEventListener('keydown', (event) => {
+    keys[event.key] = true;
 });
 
 document.addEventListener('keyup', (event) => {
