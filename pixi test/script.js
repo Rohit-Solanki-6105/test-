@@ -775,7 +775,23 @@ const bricks = [
 
 
 const keys = {};
+
+// pause
 let isPaused = false;
+// Create a graphics object for the pause overlay
+const pauseOverlay = new PIXI.Graphics();
+pauseOverlay.beginFill(0x000000, 0.1); // Adjust color and transparency as needed
+pauseOverlay.drawRect(0, 0, app.screen.width, app.screen.height);
+pauseOverlay.endFill();
+pauseOverlay.visible = false; // Initially, the overlay is hidden
+
+// Create a filter for the blur effect
+const blurFilter = new PIXI.filters.BlurFilter();
+blurFilter.blur = 5; // Adjust the blur amount as needed
+pauseOverlay.filters = [blurFilter];
+/*--------------------------------------------*/
+
+app.stage.addChild(pauseOverlay);
 //main loop
 app.ticker.add(() => {
     if (isPaused) {
@@ -866,9 +882,19 @@ app.ticker.add(() => {
 // events
 document.addEventListener('keydown', (event) => {
     keys[event.key] = true;
-    
-    if(keys['p'] || keys['P']){
+
+    if (keys['p'] || keys['P']) {
         isPaused = !isPaused;
+
+        if (isPaused) {
+            // Show the pause overlay and apply the blur effect
+            pauseOverlay.visible = true;
+            app.stage.filters = [blurFilter];
+        } else {
+            // Hide the pause overlay and remove the blur effect
+            pauseOverlay.visible = false;
+            app.stage.filters = [];
+        }
     }
 });
 
