@@ -776,7 +776,7 @@ const bricks = [
 
 const keys = {};
 
-// pause
+// pause---------------------------
 let isPaused = false;
 // Create a graphics object for the pause overlay
 const pauseOverlay = new PIXI.Graphics();
@@ -789,9 +789,9 @@ pauseOverlay.visible = false; // Initially, the overlay is hidden
 const blurFilter = new PIXI.filters.BlurFilter();
 blurFilter.blur = 5; // Adjust the blur amount as needed
 pauseOverlay.filters = [blurFilter];
+app.stage.addChild(pauseOverlay);
 /*--------------------------------------------*/
 
-app.stage.addChild(pauseOverlay);
 //main loop
 app.ticker.add(() => {
     if (isPaused) {
