@@ -6,7 +6,7 @@ class Character {
         this.sprite.y = y;
         this.velocityY = 0;
         this.isJumping = false;
-        this.jumpForce = -8
+        this.jumpForce = -9;
         this.run_speed = 10;
 
         app.stage.addChild(this.sprite);
@@ -144,11 +144,11 @@ class Character {
                 }
                 else{
                     // Collision detected, stop falling
-                    this.velocityY = 3;
-                    this.isJumping = true;
-                    onGround = true;
-                    this.run_speed = 0;
-                    
+                    // this.velocityY = 3;
+                    // this.isJumping = true;
+                    // onGround = true;
+                    // this.run_speed = 0;
+                    // if(brick.x >= )
                     // this.sprite.y = brick.getBounds().y - this.sprite.height / 2;
                     break;
                 }
@@ -775,12 +775,17 @@ const bricks = [
 
 
 const keys = {};
+let isPaused = false;
 //main loop
 app.ticker.add(() => {
+    if (isPaused) {
+        return; // Exit the function if the game is paused
+    }
+
     if (character.sprite.x > app.screen.width / 2) {
         // Move the background and platforms in the opposite direction of the character
         const movementSpeed = 10; // Adjust the speed as needed
-        background.x -= character.run_speed/8;
+        background.x -= character.run_speed/10;
         
         platforms.forEach(platform => {
             platform.sprite.x -= character.run_speed;
@@ -861,6 +866,10 @@ app.ticker.add(() => {
 // events
 document.addEventListener('keydown', (event) => {
     keys[event.key] = true;
+    
+    if(keys['p'] || keys['P']){
+        isPaused = !isPaused;
+    }
 });
 
 document.addEventListener('keyup', (event) => {
