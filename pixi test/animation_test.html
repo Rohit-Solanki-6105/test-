@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://pixijs.download/release/pixi.js"></script>
+    <style>
+      *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body{
+        overflow: hidden;
+      }
+    </style>
+    <!-- <script src="pixi.min.js"></script> -->
+    <script src="https://pixijs.download/v5.3.6/pixi.min.js"></script>
+</head>
+<body>
+<dialog open style="padding: 10px; border-radius: 10px;">
+keypress = <span id="con">false</span>
+</dialog>
+<script>
+const app = new PIXI.Application({
+    width: innerWidth,
+    height: innerHeight,
+    backgroundColor: 0x000000,
+});
+document.body.appendChild(app.view);
+
+// let playerTest = {}; // Add this line to initialize playerTest
+// let p;
+
+// PIXI.Loader.shared.add("running", "character_sprites/running_sheet.png").load(() => {
+//     player();
+//     createPlayer();
+
+//     // Move the event listener registration here
+//     document.addEventListener("keypress", function(event) {
+//         const key = event.key;
+//         // alert(key);
+//         if (key === 'A' || key === 'a') {
+//                 p.play();
+//                 document.querySelector("#con").innerHTML = true;
+//         }
+        
+//     });
+
+//     document.addEventListener("keyup", function(event) {
+//         const key = event.key;
+//         // alert(key);
+//         if (key === 'A' || key === 'a') {
+//             p.stop();
+//             document.querySelector("#con").innerHTML = false;
+//         }
+//     });
+
+// });
+
+// function player() {
+//     const sheet = PIXI.Loader.shared.resources["running"].texture.baseTexture;
+
+//     let w = 363;
+//     let h = 450;
+
+//     playerTest['running'] = [
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(1 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(2 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(3 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(4 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(5 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(6 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(7 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(8 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(9 * w, 0, w, h)),
+//     ];
+// }
+
+// function createPlayer() {
+//     const sheet = PIXI.Loader.shared.resources["running"].texture.baseTexture;
+//     p = new PIXI.AnimatedSprite(playerTest.running);
+//     p.anchor.set(0.5);
+//     p.animationSpeed = 0.3;
+//     p.loop = true;
+//     p.x = app.view.width / 2;
+//     p.y = app.view.height / 2;
+//     app.stage.addChild(p);
+//     // p.play();
+// }
+
+// player();
+// createPlayer();
+// Make sure PIXI is available in your environment
+// Include PixiJS: <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/6.2.1/pixi.min.js">
+
+// let w = 363;
+// let h = 450;
+
+// const sheet = new PIXI.Sprite(PIXI.Texture.from('character_sprites/running_sheet.png'));
+// const alienImages = [
+//     new PIXI.Texture(sheet.texture, new PIXI.Rectangle(0 * w, 0, w, h)),
+//     new PIXI.Texture(sheet.texture, new PIXI.Rectangle(1 * w, 0, w, h)),
+//     new PIXI.Texture(sheet.texture, new PIXI.Rectangle(2 * w, 0, w, h)),
+//     new PIXI.Texture(sheet.texture, new PIXI.Rectangle(3 * w, 0, w, h)),
+//     new PIXI.Texture(sheet.texture, new PIXI.Rectangle(4 * w, 0, w, h)),
+//     new PIXI.Texture(sheet.texture, new PIXI.Rectangle(5 * w, 0, w, h)),
+//     new PIXI.Texture(sheet.texture, new PIXI.Rectangle(6 * w, 0, w, h)),
+//     new PIXI.Texture(sheet.texture, new PIXI.Rectangle(7 * w, 0, w, h)),
+//     new PIXI.Texture(sheet.texture, new PIXI.Rectangle(8 * w, 0, w, h)),
+//     new PIXI.Texture(sheet.texture, new PIXI.Rectangle(9 * w, 0, w, h)),
+// ];
+
+// const textureArray = [];
+
+// for (let i = 0; i < 4; i++) {
+//     const texture = PIXI.Texture.from(alienImages[i]);
+//     textureArray.push(texture);
+// }
+
+// // Import AnimatedSprite from PixiJS
+// const { AnimatedSprite } = PIXI;
+
+// const animatedSprite = new AnimatedSprite(textureArray);
+// animatedSprite.animationSpeed = 0.3;
+// animatedSprite.loop = true;
+
+// animatedSprite.x = app.view.width / 2;
+// animatedSprite.y = app.view.height / 2;
+
+// // Use addChild to add the sprite to the stage
+// app.stage.addChild(animatedSprite);
+
+// animatedSprite.play();
+
+// app.ticker.add(() => {
+//     // Animation update logic goes here
+// });
+
+let w = 373;
+let h = 445;
+
+// Create a BaseTexture directly
+const baseTexture = new PIXI.BaseTexture.from('character_sprites/throw_frames.png');
+// h = baseTexture.height;
+console.log(h)
+const alienImages = [
+    new PIXI.Texture(baseTexture, new PIXI.Rectangle(0 * w, 0, w, h)),
+    new PIXI.Texture(baseTexture, new PIXI.Rectangle(1 * w, 0, w, h)),
+    new PIXI.Texture(baseTexture, new PIXI.Rectangle(2 * w, 0, w, h)),
+    new PIXI.Texture(baseTexture, new PIXI.Rectangle(3 * w, 0, w, h)),
+    new PIXI.Texture(baseTexture, new PIXI.Rectangle(4 * w, 0, w, h)),
+    new PIXI.Texture(baseTexture, new PIXI.Rectangle(5 * w, 0, w, h)),
+    new PIXI.Texture(baseTexture, new PIXI.Rectangle(6 * w, 0, w, h)),
+    new PIXI.Texture(baseTexture, new PIXI.Rectangle(7 * w, 0, w, h)),
+    new PIXI.Texture(baseTexture, new PIXI.Rectangle(8 * w, 0, w, h)),
+    new PIXI.Texture(baseTexture, new PIXI.Rectangle(9 * w, 0, w, h)),
+];
+
+const textureArray = [];
+
+for (let i = 0; i < alienImages.length; i++) {
+    textureArray.push(alienImages[i]);
+}
+
+const animatedSprite = new PIXI.AnimatedSprite(textureArray);
+animatedSprite.animationSpeed = 0.1;
+animatedSprite.loop = true;
+
+animatedSprite.anchor.set(0.5);
+
+animatedSprite.x = app.view.width / 2;
+animatedSprite.y = app.view.height / 2;
+
+app.stage.addChild(animatedSprite);
+
+animatedSprite.play();
+
+app.ticker.add(() => {
+    // Animation update logic goes here
+});
+
+// document.addEventListener("keydown", function(e){
+//     if(e.key == 'a'){
+//         animatedSprite.play();
+//     }
+// })
+
+// document.addEventListener("keyup", function(e){
+//     if(e.key == 'a'){
+//         animatedSprite.stop();
+//     }
+// })
+
+//     let w = 363;
+//     let h = 450;
+// const sheet = new PIXI.Sprite(PIXI.Texture.from('character_sprites/running_sheet.png'));
+// const alienImages = [
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(1 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(2 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(3 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(4 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(5 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(6 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(7 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(8 * w, 0, w, h)),
+//         new PIXI.Texture(sheet, new PIXI.Rectangle(9 * w, 0, w, h)),
+//     ];
+// const textureArray = [];
+
+// for (let i = 0; i < 4; i++)
+// {
+//     const texture = PIXI.Texture.from(alienImages[i]);
+//     textureArray.push(texture);
+// }
+
+// const animatedSprite = new AnimatedSprite(textureArray);
+// animatedSprite.animationSpeed = 0.3;
+// animatedSprite.loop = true;
+
+// animatedSprite.x = app.view.width / 2;
+// animatedSprite.y = app.view.height / 2;
+
+// app.stage.appendChild(animatedSprite);
+// animatedSprite.play();
+
+// app.ticker.add(() => {
+//     // createPlayer();
+//     // player();
+//     // createPlayer();
+//     // character.update(platforms);
+// });
+
+</script>
+</body>
+</html>
