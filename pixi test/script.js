@@ -230,7 +230,7 @@ class Character {
         // obstacles
         for (const obstacle of obstacles) {
             if (this.isCollidingWith(obstacle.getBounds())) {
-                this.decreaseLife(0.2); // Adjust the amount to decrease life as needed
+                this.decreaseLife(obstacle.lifeDecrease); // Adjust the amount to decrease life as needed
                 
                 // Toggle the blinking effect
                 this.isBlinking = true;
@@ -251,7 +251,7 @@ class Character {
             this.sprite.x-this.sprite.width/2 <= enemy.sprite.x+enemy.sprite.width && //left
             this.sprite.y+this.sprite.height/2 >= enemy.sprite.y && //top
             this.sprite.y-this.sprite.height/2 <= enemy.sprite.y+enemy.sprite.height/2) {
-                this.decreaseLife(5); // Adjust the amount to decrease life as needed
+                this.decreaseLife(enemy.lifeDecrease); // Adjust the amount to decrease life as needed
                 // alert("hi")
                 // Toggle the blinking effect
                 this.isBlinking = true;
@@ -570,12 +570,13 @@ class Cloud {
 }
 
 class Obstacle {
-    constructor(app, x, y, width, height, imagePath) {
+    constructor(app, x, y, width, height, imagePath, lifeDecrease = 0.2) {
         this.sprite = new PIXI.Sprite(PIXI.Texture.from(imagePath));
         this.sprite.x = x;
         this.sprite.y = y;
         this.sprite.width = width;
         this.sprite.height = height;
+        this.lifeDecrease = lifeDecrease;
 
         app.stage.addChild(this.sprite);
     }
@@ -675,7 +676,7 @@ class Background{
 }
 
 class Enemy {
-    constructor(app, x, y, height, width, range, img, canJump = false, movementType = 'forward', gravity = true) {
+    constructor(app, x, y, height, width, range, img, canJump = false, movementType = 'forward', gravity = true, lifeDecrease=3) {
         this.app = app;
         this.sprite = new PIXI.Sprite(PIXI.Texture.from(img));
         this.sprite.anchor.set(0.5);
@@ -689,6 +690,7 @@ class Enemy {
         this.isJumping = false;
         this.jumpCooldown = Math.random() * 300 + 100; // Random jump cooldown
         this.gravity = gravity;
+        this.lifeDecrease = lifeDecrease;
 
         // Specify the movement type: 'forward' or 'side'
         this.movementType = movementType;
@@ -722,7 +724,7 @@ class Enemy {
         // Optionally, make the enemy jump
         if (this.canJump) {
             // this.jumpCooldown--;
-
+            
             // if (this.jumpCooldown <= 0) {
             this.jump();
             // this.jumpCooldown = Math.random() * 300 + 100; // Reset jump cooldown
@@ -730,8 +732,8 @@ class Enemy {
         }
         
         if(this.sprite.x <= this.app.screen.width){
-            this.continuousForwardSpeed = 10;
-            this.sideSpeed = 10;
+            this.continuousForwardSpeed = 6;
+            this.sideSpeed = 6;
         }
         else{
             this.continuousForwardSpeed = 0;
@@ -973,7 +975,9 @@ const levels = {
         character_init_position:{
             x: 10,
             y: 600
-        }
+        },
+
+        min_stars: 2
 
     },
 
@@ -1034,7 +1038,9 @@ const levels = {
         character_init_position: {
             x: 100,
             y: 100
-        }
+        },
+
+        min_stars: 2
     }
 }
 
@@ -1187,8 +1193,23 @@ function visibility(enemies, obstacles, platforms, bricks, background, clouds){
     }
 }
 
+// try fps reduction
+var FPS_setter = 15; // 1000/40 = 25 fps
+var times = 0;
+
 //main loop
-app.ticker.add(() => {
+app.ticker.add((delta) => {
+    if(delta > 2){
+        delta = 0;
+    }
+    var timeNow = (new Date()).getTime();
+    var timeDiff = timeNow - times;
+    if(timeDiff < FPS_setter){
+        return;
+    }
+    times = timeNow;
+    
+    // console.log(delta)
     if(level > finalLevel){
         change_level();
         return;
@@ -1206,7 +1227,7 @@ app.ticker.add(() => {
         // Move the background and platforms in the opposite direction of the character
         const movementSpeed = 10; // Adjust the speed as needed
         levels[level].checkpoint++;
-        if(levels[level].checkpoint >= levels[level].endLevel){
+        if(levels[level].checkpoint >= levels[level].endLevel && character.starCount >= levels[level].min_stars){
             level++;
             character.knifeCount+=3;
             change_level();
