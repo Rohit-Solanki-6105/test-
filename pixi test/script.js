@@ -1266,6 +1266,7 @@ app.ticker.add((delta) => {
         const movementSpeed = 10; // Adjust the speed as needed
         
         if(character.sprite.x >= levels[level].endLevel && character.starCount >= levels[level].min_stars){
+            character.starCount = 0;
             level++;
             character.knifeCount+=3;
             change_level();
