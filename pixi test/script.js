@@ -686,7 +686,7 @@ class Background{
 }
 
 class Enemy {
-    constructor(app, x, y, height, width, range, img, canJump = false, movementType = 'forward', gravity = true, lifeDecrease = 3, health = 25) {
+    constructor(app, x, y, height, width, range, img, canJump = false, movementType = 'forward', gravity = true, lifeDecrease = 3, health = 25, side_forward_speed = 6) {
         this.app = app;
         this.sprite = new PIXI.Sprite(PIXI.Texture.from(img));
         this.sprite.anchor.set(0.5);
@@ -696,7 +696,7 @@ class Enemy {
         this.sprite.width = width;
         this.speed = 3;
         this.canJump = canJump;
-        this.jumpForce = Math.random() * (-200) + (-40);
+        this.jumpForce = Math.random() * (-10) + (-5);
         this.isJumping = false;
         this.jumpCooldown = Math.random() * 300 + 100; // Random jump cooldown
         this.gravity = gravity;
@@ -706,12 +706,13 @@ class Enemy {
 
         // Specify the movement type: 'forward' or 'side'
         this.movementType = movementType;
+        this.side_forward_speed = side_forward_speed;
 
         // Additional parameters for side movement
-        this.sideSpeed = 10;
+        this.sideSpeed = this.side_forward_speed;
         this.sideDirection = -1; // Start with a specific direction
         // Additional parameters for continuous forward movement
-        this.continuousForwardSpeed = 10;
+        this.continuousForwardSpeed = this.side_forward_speed;
 
         this.penX = x; // Set the initial value to the x-coordinate of the enemy
         this.penRange = range;
@@ -755,15 +756,16 @@ class Enemy {
         if (this.canJump) {
             // this.jumpCooldown--;
             
-            // if (this.jumpCooldown <= 0) {
             this.jump();
+            this.velocityY+=0.2;
+            // if (this.jumpCooldown <= 0) {
             // this.jumpCooldown = Math.random() * 300 + 100; // Reset jump cooldown
             // }
         }
         
         if(this.sprite.x <= this.app.screen.width){
-            this.continuousForwardSpeed = 6;
-            this.sideSpeed = 6;
+            this.continuousForwardSpeed = this.side_forward_speed;
+            this.sideSpeed = this.side_forward_speed;
         }
         else{
             this.continuousForwardSpeed = 0;
@@ -857,7 +859,8 @@ class Enemy {
     jump() {
         if (!this.isJumping) {
             this.isJumping = true;
-            this.sprite.y += this.jumpForce;
+            // this.sprite.y += this.jumpForce;
+            this.velocityY = this.jumpForce;
         }
     }
 
@@ -979,7 +982,7 @@ const levels = {
         ],
         
         enemies: [
-             new Enemy(app, 1465, 550, 100, 100, 60, 'e1.png', false, 'side', false,0.2, 100),
+             new Enemy(app, 1465, 550, 100, 100, 60, 'e1.png', true, 'side', true,0.2, 100),
             // new Enemy(app, 2200, 100, 50, 50, 200, 'e1.png', true, 'side', true), // This enemy can jump
             // new Enemy(app, 2500, 100, 100, 100, 100, 'e1.png', true, 'forward'),
             // new Enemy(app, 1000, 100, 50, 50, 250, 'e1.png', false, 'side', false),
