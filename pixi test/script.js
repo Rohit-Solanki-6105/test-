@@ -11,6 +11,7 @@ class Character {
         this.jumpForce = -14;
         this.run_speed = 10;
         this.starCount = 0;
+        this.AttackPower = 0;
 
         app.stage.addChild(this.sprite);
 
@@ -611,6 +612,7 @@ class Knife {
 
     throwKnife() {
         this.isActive = true;
+        character.AttackPower = 50;
 
         // Make the knife visible when thrown
         this.app.stage.addChild(this.sprite);
@@ -641,15 +643,19 @@ class Knife {
             this.sprite.x-this.sprite.width/2 <= enemy.sprite.x+enemy.sprite.width && //left
             this.sprite.y+this.sprite.height/2 >= enemy.sprite.y && //top
             this.sprite.y-this.sprite.height/2 <= enemy.sprite.y+enemy.sprite.height/2) {
-                app.stage.removeChild(enemy.sprite);
-                enemies.splice(i, 1);
+                enemy.health -= character.AttackPower;
+                if(enemy.health <= 0){
+                    app.stage.removeChild(enemy.sprite);
+                    enemies.splice(i, 1);
+                    // Optionally, you may want to remove the obstacle from the stage
+                    // app.stage.removeChild(obstacle.sprite);
+                    break;
+                }
+                
                 this.isActive = false;
                 this.sprite.x = 0;
                 this.sprite.y = 0;
                 app.stage.removeChild(this.sprite);
-                // Optionally, you may want to remove the obstacle from the stage
-                // app.stage.removeChild(obstacle.sprite);
-                break;
             }
         }
     }
@@ -680,7 +686,7 @@ class Background{
 }
 
 class Enemy {
-    constructor(app, x, y, height, width, range, img, canJump = false, movementType = 'forward', gravity = true, lifeDecrease=3) {
+    constructor(app, x, y, height, width, range, img, canJump = false, movementType = 'forward', gravity = true, lifeDecrease = 3, health = 25) {
         this.app = app;
         this.sprite = new PIXI.Sprite(PIXI.Texture.from(img));
         this.sprite.anchor.set(0.5);
@@ -696,6 +702,8 @@ class Enemy {
         this.gravity = gravity;
         this.lifeDecrease = lifeDecrease;
 
+        this.health = health;
+
         // Specify the movement type: 'forward' or 'side'
         this.movementType = movementType;
 
@@ -708,10 +716,23 @@ class Enemy {
         this.penX = x; // Set the initial value to the x-coordinate of the enemy
         this.penRange = range;
 
+        this.HealthText = new PIXI.Text('', {
+            fontSize: 20,
+            fill: 0x000000,
+            align: 'center'
+        });
+
+        this.HealthText.x = this.sprite.x + this.sprite.width;
+        this.HealthText.y = this.sprite.y;
+
+        // this.HealthText.anchor.set(-1, 1)
+
+        app.stage.addChild(this.HealthText);
         
         this.velocityY = 0;
-
+        
         app.stage.addChild(this.sprite);
+        
     }
 
     isOnPlatform(platform) {
@@ -724,7 +745,12 @@ class Enemy {
     }
 
     update(platforms, bricks) {
-        
+        // health
+        this.HealthText.x = this.sprite.x + this.sprite.width / 2;
+        this.HealthText.y = this.sprite.y - this.sprite.height / 2;
+
+        this.HealthText.text = this.health;
+
         // Optionally, make the enemy jump
         if (this.canJump) {
             // this.jumpCooldown--;
@@ -824,6 +850,8 @@ class Enemy {
                 // this.velocityY = 0;
             }
         }
+        
+
     }
 
     jump() {
@@ -951,7 +979,7 @@ const levels = {
         ],
         
         enemies: [
-             new Enemy(app, 1465, 550, 100, 100, 60, 'e1.png', false, 'side', false,0.2),
+             new Enemy(app, 1465, 550, 100, 100, 60, 'e1.png', false, 'side', false,0.2, 100),
             // new Enemy(app, 2200, 100, 50, 50, 200, 'e1.png', true, 'side', true), // This enemy can jump
             // new Enemy(app, 2500, 100, 100, 100, 100, 'e1.png', true, 'forward'),
             // new Enemy(app, 1000, 100, 50, 50, 250, 'e1.png', false, 'side', false),
@@ -1155,6 +1183,7 @@ function visibility(enemies, obstacles, platforms, bricks, background, clouds){
 
             levels[i].enemies.forEach(enemy => {
                 enemy.sprite.visible = false; 
+                enemy.HealthText.visibile = false;
                 // console.log(enemy.sprite.x);
             });
 
@@ -1183,6 +1212,7 @@ function visibility(enemies, obstacles, platforms, bricks, background, clouds){
 
             levels[i].enemies.forEach(enemy => {
                 enemy.sprite.visible = true; 
+                enemy.HealthText.visibile = true;
                 // console.log(enemy.sprite.x);
             });
 
