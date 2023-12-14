@@ -1309,14 +1309,6 @@ app.ticker.add((delta) => {
     if (character.sprite.x < app.screen.width / 15) {
         // Move the background and platforms in the opposite direction of the character
         const movementSpeed = 10; // Adjust the speed as needed
-        
-        if(character.sprite.x >= levels[level].endLevel && character.starCount >= levels[level].min_stars){
-            level++;
-            character.knifeCount+=3;
-            change_level();
-            character.sprite.x = levels[level].character_init_position.x;
-            character.sprite.y = levels[level].character_init_position.y;
-        }
 
         levels[level].background.sprite.x += character.run_speed/10;
 
