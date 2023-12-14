@@ -184,10 +184,14 @@ class Character {
     }
 
     run_forward(){
+        // this.CurrentAnimation.scale.x = 1;
+        this.CurrentAnimation.scale.x = 0.35;
         this.sprite.x += this.run_speed;
     }
 
     run_backward(){
+        // this.CurrentAnimation.scale.x = -1;
+        this.CurrentAnimation.scale.x = -0.35;
         this.sprite.x -= this.run_speed;
     }
 
@@ -902,7 +906,6 @@ class Collector{
     }
 }
 
-
 const app = new PIXI.Application({
     width: innerWidth,
     height: innerHeight,
@@ -914,8 +917,7 @@ document.body.appendChild(app.view);
 
 let level = 1;
 const levels = {
-     1:{
-        checkpoint: 0,
+    1:{
         endLevel: 200,
 
         background: new Background(app, 1.5, 'side_fuji5.jpg'),
@@ -984,8 +986,8 @@ const levels = {
         min_stars: 2
 
     },
+
     2:{
-        checkpoint: 0,
         endLevel: 200,
         
         background: new Background(app, 1.5, 'side_fuji5.jpg'),
@@ -1229,14 +1231,16 @@ app.ticker.add((delta) => {
     if (character.sprite.x > app.screen.width / 2) {
         // Move the background and platforms in the opposite direction of the character
         const movementSpeed = 10; // Adjust the speed as needed
-        levels[level].checkpoint++;
-        if(levels[level].checkpoint >= levels[level].endLevel && character.starCount >= levels[level].min_stars){
+        
+        if(character.sprite.x >= levels[level].endLevel && character.starCount >= levels[level].min_stars){
             level++;
             character.knifeCount+=3;
             change_level();
             character.sprite.x = levels[level].character_init_position.x;
             character.sprite.y = levels[level].character_init_position.y;
         }
+
+        levels[level].endLevel -= character.run_speed;
 
         levels[level].background.sprite.x -= character.run_speed/10;
         
@@ -1268,6 +1272,51 @@ app.ticker.add((delta) => {
 
         character.sprite.x = app.screen.width / 2;
     }
+    // console.log(levels[level].checkpoint, levels[level].endLevel);
+    if (character.sprite.x < app.screen.width / 15) {
+        // Move the background and platforms in the opposite direction of the character
+        const movementSpeed = 10; // Adjust the speed as needed
+        
+        if(character.sprite.x >= levels[level].endLevel && character.starCount >= levels[level].min_stars){
+            level++;
+            character.knifeCount+=3;
+            change_level();
+            character.sprite.x = levels[level].character_init_position.x;
+            character.sprite.y = levels[level].character_init_position.y;
+        }
+
+        levels[level].background.sprite.x += character.run_speed/10;
+
+        levels[level].endLevel += character.run_speed;
+        
+        levels[level].platforms.forEach(platform => {
+            platform.sprite.x += character.run_speed;
+        });
+
+        levels[level].clouds.forEach(cloud => {
+            cloud.sprite.x += character.run_speed/7;          
+        });
+
+        levels[level].obstacles.forEach(obs => {
+            obs.sprite.x += character.run_speed;
+        });
+
+        levels[level].enemies.forEach(enemy => {
+            enemy.penX += character.run_speed;
+            enemy.sprite.x += character.run_speed;
+            // console.log(enemy.sprite.x);
+        })
+
+        levels[level].bricks.forEach(brick => {
+            brick.sprite.x += character.run_speed;
+        });
+
+        levels[level].collectors.forEach(collect => {
+            collect.sprite.x += character.run_speed;
+        });
+
+        character.sprite.x = app.screen.width / 15;
+    }
 
     character.update(levels[level].platforms, levels[level].obstacles, levels[level].enemies, levels[level].bricks, levels[level].collectors);
     // for(const knife of knifes){
@@ -1290,42 +1339,6 @@ app.ticker.add((delta) => {
         character.CurrentAnimation.animationSpeed = 0.4;
     }
 
-    
-    if (keys['ArrowRight']){
-        character.run_forward();
-        
-        // character.CurrentAnimation.stop();
-        if (!(character.isRunning)  && !character.jumping) {
-            character.CurrentAnimation.textures = character.RunImages;
-            character.CurrentAnimation.loop = true;
-            character.CurrentAnimation.play();
-            character.isRunning = true;
-            character.isStanding = false;
-        }
-    }
-    else{
-        if(!character.isStanding){
-            character.CurrentAnimation.textures = character.StandImages;
-            character.CurrentAnimation.loop = true;
-            character.CurrentAnimation.play();
-            character.isRunning = false;
-            character.isStanding = true;
-        }
-        // character.RunSprite.stop();
-    }
-
-    if (keys['ArrowLeft']){
-        character.run_backward();
-        if (!(character.isRunning) && !character.jumping) {
-            character.CurrentAnimation.textures = character.RunImages;
-            character.CurrentAnimation.loop = true;
-            // character.CurrentAnimation.animationSpeed = -0.3;
-            character.CurrentAnimation.play();
-            character.isRunning = true;
-            character.isStanding = false;
-        }
-    }
-
     if (keys[' '] || keys['ArrowUp']) {
         character.jump();
         if(!character.jumping){
@@ -1335,38 +1348,50 @@ app.ticker.add((delta) => {
             character.CurrentAnimation.play();
         }
     }
-    else{
-        if(character.jumping){
-            character.jumping = false;
+    
+    if(keys['a']){
+        // character.throwKnife();
+        if(character.knifeCount > 0){
+            if(!character.isThrowing){
+                character.isThrowing = true;
+                character.CurrentAnimation.textures = character.ThrowImages;
+                character.CurrentAnimation.loop = false;
+                character.CurrentAnimation.play();
+            }
         }
-        if(character.isStanding){
-            character.CurrentAnimation.textures = character.StandImages;
+    }
+
+    // running, standing
+    if (keys['ArrowRight']) {
+        character.run_forward();
+        if (!character.isRunning) {
+            // Set running animation here
+            character.CurrentAnimation.textures = character.RunImages;
+            character.CurrentAnimation.loop = true;
             character.CurrentAnimation.play();
+            character.isRunning = true;
+            character.isStanding = false;
+        
         }
-        // if(character.isRunning){
-        //     character.CurrentAnimation.textures = character.StandImages;
-        //     character.CurrentAnimation.play();
-        // }
+    } else if (keys['ArrowLeft']) {
+        character.run_backward();
+        if (!character.isRunning) {
+                // Set running animation here
+            character.CurrentAnimation.textures = character.RunImages;
+            character.CurrentAnimation.loop = true;
+            character.CurrentAnimation.play();
+            character.isRunning = true;
+            character.isStanding = false;
+        }
+    } else if (!keys['ArrowRight'] && !keys['ArrowLeft']) {
+            // If no movement keys are pressed, set the standing animation
+        character.CurrentAnimation.textures = character.StandImages;
+        character.CurrentAnimation.play();
+        character.CurrentAnimation.loop = true;
+        character.isRunning = false;
+        character.isStanding = true;
     }
     
-    // if(keys['a']){
-    //     // character.throwKnife();
-    //     if(character.knifeCount > 0){
-    //         if(!character.isThrowing){
-    //             character.isThrowing = true;
-    //             character.CurrentAnimation.textures = character.ThrowImages;
-    //             character.CurrentAnimation.loop = false;
-    //             character.CurrentAnimation.play();
-    //         }
-    //     }
-    // }
-
-    // for(let key in keys){
-    //     if(keys[key]){
-    //         break;
-    //     }
-    //     if(!char)
-    // }
 
     // Make sure the animated sprite is being updated
     app.renderer.render(app.stage);
