@@ -1031,44 +1031,53 @@ const levels = {
         ],
 
         platforms: [
-            new Platform(app, 0, 400, 20, 150, 'plat.png'),
-            new Platform(app, 200, 200, 20, 200, 'plat.png'),
-            new Platform(app, 400, 400, 20, 150, 'plat.png'),
-            new Platform(app, 700, 200, 20, 140, 'plat.png'),
-            new Platform(app, 800, 300, 20, 100, 'plat.png'),
-            new Platform(app, 1000, 450, 20, 200, 'plat.png'),
-            new Platform(app, 1300, 600, 20, 140, 'plat.png'),
-            new Platform(app, 1500, 500, 20, 100, 'plat.png'),
-            new Platform(app, 1800, 450, 20, 500, 'plat.png'),
-            new Platform(app, 0, app.screen.height-50, 20, app.screen.width*2, 'plat.png')
+            //new Platform(app, 290,390,20,100,'plat.png'),//top1st
+            new Platform(app,    0, 710, 30, 160, 'plat.png'),//bottom1st
+            new Platform(app,  320, 650,90,70,'plat.png'),//pillar 1
+            new Platform(app,  590, 550,200,70,'plat.png'),//pillar 2
+            new Platform(app,  870, 440,300,70,'plat.png'),//pillar3
+            new Platform(app, 1150, 380,380,70,'plat.png'),//pillar4
+            new Platform(app, 1450, 480,330,70,'plat.png'),//pillar5
+            new Platform(app, 1780,390,400,70,'plat.png'),//pillar6
+            new Platform(app, 2100,310,430,70,'plat.png'),//pillar7
+            new Platform(app, 2450,270,460,70,'plat.png'),//pillar8
+            new Platform(app, 2800,220,510,70,'plat.png'),//pillar9
+            new Platform(app, 4100,630,100,70,'plat.png'),//pillar10
+            new Platform(app, 4350,550,190,70,'plat.png'),//pillar11
+            new Platform(app, 4600,440,300,70,'plat.png'),//pillar12
+            new Platform(app, 4900,310,440,70,'plat.png'),//pillar13
+            new Platform(app, 3300,710,20,600,'plat.png'),//bottom2nd
+            new Platform(app, 5200,350,20,1000,'plat.png'),//bottom3rd
+
+           // new Platform(app, 0, app.screen.height-50, 20, app.screen.width*2, 'plat.png')
             // Add more platforms as needed
         ],
 
         obstacles: [
-            new Obstacle(app, 300, 200, 50, 50, 'obstacle1.png'),
-            new Obstacle(app, 500, 350, 50, 50, 'obstacle1.png')
+             new Obstacle(app, 3300, 600, 50, 110, 'obstacle1.png'),
+             new Obstacle(app, 3850, 660, 50, 50, 'obstacle1.png'),
+            // new Obstacle(app, 500, 350, 50, 50, 'obstacle1.png')
         ],
 
         enemies: [
-            new Enemy(app, 1600, 100, 100, 100, 0, 'e1.png', false, 'forward', false),
-            new Enemy(app, 500, 100, 50, 50, 0, 'e1.png', true), // This enemy can jump
-            new Enemy(app, 800, 100, 100, 100, 100, 'e1.png', true, 'side'),
-            new Enemy(app, 1000, 100, 50, 50, 250, 'e1.png', false, 'side', false),
-            new Enemy(app, 1800, 100, 100, 100, 300, 'e1.png', false, 'side', false),
-            new Enemy(app, 1900, 100, 100, 100, 100, 'e1.png', false, 'side', true)
+             new Enemy(app, 1675, 500, 100, 100, 50, 'e1.png', false, 'side', false),
+             new Enemy(app, 2500, 100, 50, 50, 36, 'e1.png', true), // This enemy can jump
+             //new Enemy(app, 1000, 500, 100, 100, 20, 'e1.png', true),
+            // new Enemy(app, 1000, 100, 50, 50, 250, 'e1.png', false, 'side', false),
+            // new Enemy(app, 1800, 100, 100, 100, 300, 'e1.png', false, 'side', false),
+            // new Enemy(app, 1900, 100, 100, 100, 100, 'e1.png', false, 'side', true)
         ],
 
         bricks: [
-            new Brick(app, 100, 200, 20, 100, 'brick.png', false),
-            new Brick(app, 300, 200, 20, 100, 'brick.png', true),
-            new Brick(app, 500, 500, 30, 100, 'brick.png', false)
+            new Brick(app,3300, 600, 110, 50,'brick.png',false,500),
         ],
         
         collectors: [
-            new Collector(app, 400, 400, 30, 30, "knife", "knife.png"),
-            new Collector(app, 500, 500, 30, 30, "Life", "life.png"),
-            new Collector(app, 600, 600, 30, 30, "health", "health.png"),
-            new Collector(app, 800, 400, 30, 30, "star", "star.png")
+            // new Collector(app, 400, 400, 30, 30, "knife", "knife.png"),
+            new Collector(app, 3380, 660, 30, 30, "Life", "life.png"),
+            new Collector(app, 1950, 200, 30, 30, "health", "health.png"),
+            new Collector(app, 800, 400, 30, 30, "star", "star.png"),
+            new Collector(app,2300,160,30,30,"star",'star.png'),
         ],
 
         character_init_position: {
@@ -1076,7 +1085,7 @@ const levels = {
             y: 100
         },
 
-        min_stars: 2
+        min_stars: 3
     }
 }
 
