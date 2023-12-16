@@ -1031,16 +1031,22 @@ const levels = {
         ],
 
         platforms: [
-            new Platform(app, 0, 400, 20, 150, 'plat.png'),
-            new Platform(app, 200, 200, 20, 200, 'plat.png'),
-            new Platform(app, 400, 400, 20, 150, 'plat.png'),
-            new Platform(app, 700, 200, 20, 140, 'plat.png'),
-            new Platform(app, 800, 300, 20, 100, 'plat.png'),
-            new Platform(app, 1000, 450, 20, 200, 'plat.png'),
-            new Platform(app, 1300, 600, 20, 140, 'plat.png'),
-            new Platform(app, 1500, 500, 20, 100, 'plat.png'),
-            new Platform(app, 1800, 450, 20, 500, 'plat.png'),
-            new Platform(app, 0, app.screen.height-50, 20, app.screen.width*2, 'plat.png')
+            new Platform(app,    0, 710, 30, 160, 'plat.png'),//bottom1st
+            new Platform(app,  340, 650,90,70,'plat.png'),//pillar 1
+            new Platform(app,  590, 550,200,70,'plat.png'),//pillar 2
+            new Platform(app,  870, 440,300,70,'plat.png'),//pillar3
+            new Platform(app, 1150, 380,380,70,'plat.png'),//pillar4
+            new Platform(app, 1450, 480,330,70,'plat.png'),//pillar5
+            new Platform(app, 1780,390,400,70,'plat.png'),//pillar6
+            new Platform(app, 2100,310,430,70,'plat.png'),//pillar7
+            new Platform(app, 2450,270,460,70,'plat.png'),//pillar8
+            new Platform(app, 2800,220,510,70,'plat.png'),//pillar9
+            new Platform(app, 4100,630,100,70,'plat.png'),//pillar10
+            new Platform(app, 4350,550,190,70,'plat.png'),//pillar11
+            new Platform(app, 4600,440,300,70,'plat.png'),//pillar12
+            new Platform(app, 4900,310,440,70,'plat.png'),//pillar13
+            new Platform(app, 3300,710,20,600,'plat.png'),//bottom2nd
+            new Platform(app, 5200,350,20,1000,'plat.png'),//bottom3rd
             // Add more platforms as needed
         ],
 
