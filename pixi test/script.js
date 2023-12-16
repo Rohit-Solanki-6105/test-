@@ -1031,8 +1031,9 @@ const levels = {
         ],
 
         platforms: [
+             //new Platform(app, 290,390,20,100,'plat.png'),//top1st
             new Platform(app,    0, 710, 30, 160, 'plat.png'),//bottom1st
-            new Platform(app,  340, 650,90,70,'plat.png'),//pillar 1
+            new Platform(app,  320, 650,90,70,'plat.png'),//pillar 1
             new Platform(app,  590, 550,200,70,'plat.png'),//pillar 2
             new Platform(app,  870, 440,300,70,'plat.png'),//pillar3
             new Platform(app, 1150, 380,380,70,'plat.png'),//pillar4
