@@ -1052,8 +1052,9 @@ const levels = {
         ],
 
         obstacles: [
-            new Obstacle(app, 300, 200, 50, 50, 'obstacle1.png'),
-            new Obstacle(app, 500, 350, 50, 50, 'obstacle1.png')
+            new Obstacle(app, 3300, 600, 50, 110, 'obstacle1.png'),
+            new Obstacle(app, 3850, 660, 50, 50, 'obstacle1.png'),
+            // new Obstacle(app, 500, 350, 50, 50, 'obstacle1.png')
         ],
 
         enemies: [
