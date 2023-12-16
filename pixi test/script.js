@@ -1058,25 +1058,24 @@ const levels = {
         ],
 
         enemies: [
-            new Enemy(app, 1600, 100, 100, 100, 0, 'e1.png', false, 'forward', false),
-            new Enemy(app, 500, 100, 50, 50, 0, 'e1.png', true), // This enemy can jump
-            new Enemy(app, 800, 100, 100, 100, 100, 'e1.png', true, 'side'),
-            new Enemy(app, 1000, 100, 50, 50, 250, 'e1.png', false, 'side', false),
-            new Enemy(app, 1800, 100, 100, 100, 300, 'e1.png', false, 'side', false),
-            new Enemy(app, 1900, 100, 100, 100, 100, 'e1.png', false, 'side', true)
+             new Enemy(app, 1675, 500, 100, 100, 50, 'e1.png', false, 'side', false),
+             new Enemy(app, 2500, 100, 50, 50, 36, 'e1.png', true), // This enemy can jump
+             //new Enemy(app, 1000, 500, 100, 100, 20, 'e1.png', true),
+            // new Enemy(app, 1000, 100, 50, 50, 250, 'e1.png', false, 'side', false),
+            // new Enemy(app, 1800, 100, 100, 100, 300, 'e1.png', false, 'side', false),
+            // new Enemy(app, 1900, 100, 100, 100, 100, 'e1.png', false, 'side', true)
         ],
 
         bricks: [
-            new Brick(app, 100, 200, 20, 100, 'brick.png', false),
-            new Brick(app, 300, 200, 20, 100, 'brick.png', true),
-            new Brick(app, 500, 500, 30, 100, 'brick.png', false)
+            new Brick(app,3300, 600, 110, 50,'brick.png',false,500),
         ],
-        
+
         collectors: [
-            new Collector(app, 400, 400, 30, 30, "knife", "knife.png"),
-            new Collector(app, 500, 500, 30, 30, "Life", "life.png"),
-            new Collector(app, 600, 600, 30, 30, "health", "health.png"),
-            new Collector(app, 800, 400, 30, 30, "star", "star.png")
+            // new Collector(app, 400, 400, 30, 30, "knife", "knife.png"),
+            new Collector(app, 3380, 660, 30, 30, "Life", "life.png"),
+            new Collector(app, 1950, 200, 30, 30, "health", "health.png"),
+            new Collector(app, 800, 400, 30, 30, "star", "star.png"),
+            new Collector(app,2300,160,30,30,"star",'star.png'),
         ],
 
         character_init_position: {
@@ -1084,7 +1083,7 @@ const levels = {
             y: 100
         },
 
-        min_stars: 2
+        min_stars: 3
     }
 }
 
