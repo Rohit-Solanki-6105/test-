@@ -317,23 +317,30 @@ class Character {
                     this.isJumping = false;
                     this.jumping = false;
                 }
+                
+                if(this.sprite.y <= brick.sprite.y+(brick.sprite.height+this.sprite.height)){//bottom
+                    // this.velocityY = 3;
+                    if(this.velocityY >= 3){
+                        this.velocityY+=0.2;
+                    }
+                    else{
+                        this.velocityY = 3;
+                    }
+                }
+                
 
-                if(this.sprite.y-this.sprite.height <= brick.sprite.y+brick.sprite.height){//bottom
-                    this.velocityY = 3;
+                if(this.sprite.y+this.sprite.height/2 > brick.sprite.y && 
+                    this.sprite.x+this.sprite.width/2 > brick.sprite.x-(brick.sprite.width*0.3) && 
+                    this.sprite.x+this.sprite.width/2 <= brick.sprite.x+(brick.sprite.width*0.3)){ // left
+                    // this.run_speed = 0;
+                    this.sprite.x = brick.sprite.x-(this.sprite.width/2)-10;
                 }
 
-                if(this.sprite.y > brick.sprite.y && 
-                    this.sprite.x+this.sprite.width/2 > brick.sprite.x-2 && 
-                    this.sprite.x+this.sprite.width/2 <= brick.sprite.x+5){ // left
+                if(this.sprite.y+this.sprite.height/2 > brick.sprite.y && 
+                    this.sprite.x <= brick.sprite.x+brick.sprite.width+(brick.sprite.width*0.2) && 
+                    this.sprite.x >= brick.sprite.x+brick.sprite.width-(brick.sprite.width*0.2)){ // right
                     // this.run_speed = 0;
-                    this.sprite.x = brick.sprite.x-(this.sprite.width/2)-5;
-                }
-
-                if(this.sprite.y > brick.sprite.y && 
-                    this.sprite.x <= brick.sprite.x+brick.sprite.width+20 && 
-                    this.sprite.x >= brick.sprite.x+brick.sprite.width-20){ // right
-                    // this.run_speed = 0;
-                    this.sprite.x = brick.sprite.x+(brick.sprite.width/2)+(this.sprite.width)+2;
+                    this.sprite.x = brick.sprite.x+(brick.sprite.width)+(this.sprite.width*0.2);
                 }
                 
                 // this.velocityY = 0;
@@ -686,7 +693,7 @@ class Background{
 }
 
 class Enemy {
-    constructor(app, x, y, height, width, range, img, canJump = false, movementType = 'forward', gravity = true, lifeDecrease = 3, health = 25, side_forward_speed = 6) {
+    constructor(app, x, y, height, width, range, img, canJump = false, movementType = 'forward', gravity = true, lifeDecrease = 3, health = 25, side_forward_speed = 6, jumpForce = -14) {
         this.app = app;
         this.sprite = new PIXI.Sprite(PIXI.Texture.from(img));
         this.sprite.anchor.set(0.5);
@@ -696,7 +703,9 @@ class Enemy {
         this.sprite.width = width;
         this.speed = 3;
         this.canJump = canJump;
-        this.jumpForce = Math.random() * (-10) + (-5);
+        // this.jumpForce = Math.random() * (-10) + (-5);
+        // console.log(this.jumpForce, this.sprite.height, this.sprite.width);
+        this.jumpForce = jumpForce;
         this.isJumping = false;
         this.jumpCooldown = Math.random() * 300 + 100; // Random jump cooldown
         this.gravity = gravity;
@@ -827,22 +836,23 @@ class Enemy {
                     this.jumping = false;
                 }
 
-                if(this.sprite.y-this.sprite.height <= brick.sprite.y+brick.sprite.height){//bottom
+                if(this.sprite.y-this.sprite.height/2 <= brick.sprite.y+brick.sprite.height){//bottom
                     this.velocityY = 3;
                 }
 
+
                 if(this.sprite.y > brick.sprite.y && 
-                    this.sprite.x+this.sprite.width/2 > brick.sprite.x-2 && 
-                    this.sprite.x+this.sprite.width/2 <= brick.sprite.x+5){ // left
+                    this.sprite.x+this.sprite.width/2 > brick.sprite.x-(brick.sprite.width*0.3) && 
+                    this.sprite.x+this.sprite.width/2 <= brick.sprite.x+(brick.sprite.width*0.3)){ // left
                     // this.run_speed = 0;
                     this.sprite.x = brick.sprite.x-(this.sprite.width/2)-5;
                     this.continuousForwardSpeed *= -1;
                     this.sideDirection *= -1;
                 }
 
-                if(this.sprite.y > brick.sprite.y && 
-                    this.sprite.x <= brick.sprite.x+brick.sprite.width+20 && 
-                    this.sprite.x >= brick.sprite.x+brick.sprite.width-20){ // right
+                if(this.sprite.y+this.sprite.height/2 > brick.sprite.y && 
+                    this.sprite.x <= brick.sprite.x+brick.sprite.width+(brick.sprite.width*0.2) && 
+                    this.sprite.x >= brick.sprite.x+brick.sprite.width-(brick.sprite.width*0.2)){ // right
                     // this.run_speed = 0;
                     this.sprite.x = brick.sprite.x+(brick.sprite.width/2)+(this.sprite.width)+2;
                     this.continuousForwardSpeed *= -1;
@@ -946,7 +956,7 @@ const app = new PIXI.Application({
 document.body.appendChild(app.view);
 
 
-let level = 1;
+let level = 2;
 const levels = {
     1:{
         endLevel: 200,
@@ -1031,21 +1041,21 @@ const levels = {
         ],
 
         platforms: [
-             //new Platform(app, 290,390,20,100,'plat.png'),//top1st
+            //  new Platform(app, 290,390,20,100,'plat.png'),//top1st
             new Platform(app,    0, 710, 30, 160, 'plat.png'),//bottom1st
-            new Platform(app,  320, 650,90,70,'plat.png'),//pillar 1
-            new Platform(app,  590, 550,200,70,'plat.png'),//pillar 2
-            new Platform(app,  870, 440,300,70,'plat.png'),//pillar3
-            new Platform(app, 1150, 380,380,70,'plat.png'),//pillar4
-            new Platform(app, 1450, 480,330,70,'plat.png'),//pillar5
-            new Platform(app, 1780,390,400,70,'plat.png'),//pillar6
-            new Platform(app, 2100,310,430,70,'plat.png'),//pillar7
-            new Platform(app, 2450,270,460,70,'plat.png'),//pillar8
-            new Platform(app, 2800,220,510,70,'plat.png'),//pillar9
-            new Platform(app, 4100,630,100,70,'plat.png'),//pillar10
-            new Platform(app, 4350,550,190,70,'plat.png'),//pillar11
-            new Platform(app, 4600,440,300,70,'plat.png'),//pillar12
-            new Platform(app, 4900,310,440,70,'plat.png'),//pillar13
+            // new Platform(app,  320, 650,90,70,'plat.png'),//pillar 1
+            // new Platform(app,  590, 550,200,70,'plat.png'),//pillar 2
+            // new Platform(app,  870, 440,300,70,'plat.png'),//pillar3
+            // new Platform(app, 1150, 380,380,70,'plat.png'),//pillar4
+            // new Platform(app, 1450, 480,330,70,'plat.png'),//pillar5
+            // new Platform(app, 1780,390,400,70,'plat.png'),//pillar6
+            // new Platform(app, 2100,310,430,70,'plat.png'),//pillar7
+            // new Platform(app, 2450,270,460,70,'plat.png'),//pillar8
+            // new Platform(app, 2800,220,510,70,'plat.png'),//pillar9
+            // new Platform(app, 4100,630,100,70,'plat.png'),//pillar10
+            // new Platform(app, 4350,550,190,70,'plat.png'),//pillar11
+            // new Platform(app, 4600,440,300,70,'plat.png'),//pillar12
+            // new Platform(app, 4900,310,440,70,'plat.png'),//pillar13
             new Platform(app, 3300,710,20,600,'plat.png'),//bottom2nd
             new Platform(app, 5200,350,20,1000,'plat.png'),//bottom3rd
             // Add more platforms as needed
@@ -1067,7 +1077,23 @@ const levels = {
         ],
 
         bricks: [
-            new Brick(app,3300, 600, 110, 50,'brick.png',false,500),
+            new Brick(app,    0, 710, 30, 260, 'plat.png'),//bottom1st
+            new Brick(app,  370, 650,90,70,'plat.png'),//pillar 1
+            new Brick(app,  170, 440,100,70,'plat.png'),//pillar3
+            new Brick(app,  590, 550,200,70,'plat.png'),//pillar 2
+            new Brick(app, 1450, 480,330,70,'plat.png'),//pillar5
+            new Brick(app, 1150, 380,380,70,'plat.png'),//pillar4
+            new Brick(app, 2100,310,430,70,'plat.png'),//pillar7
+            new Brick(app, 1780,390,400,70,'plat.png'),//pillar6
+            new Brick(app, 2800,220,510,70,'plat.png'),//pillar9
+            new Brick(app, 2450,270,460,70,'plat.png'),//pillar8
+            new Brick(app, 4350,550,190,70,'plat.png'),//pillar11
+            new Brick(app, 4100,630,100,70,'plat.png'),//pillar10
+            new Brick(app, 4900,310,440,70,'plat.png'),//pillar13
+            new Brick(app, 4600,440,300,70,'plat.png'),//pillar12
+            new Brick(app, 5200,350,20,1000,'plat.png'),//bottom3rd
+            new Brick(app, 3300,710,20,600,'plat.png'),//bottom2nd
+            // new Brick(app,3300, 600, 110, 50,'brick.png',false,500),
         ],
 
         collectors: [
