@@ -653,6 +653,7 @@ class Knife {
                 enemy.health -= character.AttackPower;
                 if(enemy.health <= 0){
                     app.stage.removeChild(enemy.sprite);
+                    app.stage.removeChild(enemy.HealthText);
                     enemies.splice(i, 1);
                     // Optionally, you may want to remove the obstacle from the stage
                     // app.stage.removeChild(obstacle.sprite);
@@ -881,6 +882,111 @@ class Enemy {
             width: this.sprite.width,
             height: this.sprite.height,
         };
+    }
+}
+
+class PowerUp{
+    constructor(app, name, banner_img, Bx, By, animation_frames_img, animation_height, animation_width, animation_time = 0.3, animation_loop = true, height = 0, width = 0, radius = 10){
+        this.name = name;
+        this.banner_img = new PIXI.Sprite(PIXI.Texture.from(banner_img));
+        this.banner_img.x = Bx;
+        this.banner_img.y = By;
+        this.banner_img.height = 30;
+        this.banner_img.width = 30;
+        app.stage.addChild(this.banner_img);
+
+        this.height = height;
+        this.width = width;
+        this.radius = radius;
+        this.animation_height = animation_height;
+        this.animation_width = animation_width;
+        this.animation_loop = animation_loop;
+        this.animation_time = animation_time;
+        this.animation_frames_img = animation_frames_img;
+        this.active = false;
+
+        this.scale = 2;
+        // this.Animation = new PIXI.Sprite(PIXI.Texture.from(animation_frames_img));
+        this.Animation = new PIXI.Graphics();
+        if(this.name == 'WaveStorm'){
+            this.Animation.beginFill(0xffffff);
+            this.Animation.alpha = 0.3; // transparency
+            this.Animation.drawCircle(0, 0, this.radius);
+            this.Animation.endFill();
+        }
+        // this.sprite.beginFill(0xffffff);
+        // this.sprite.drawCircle(30, 30, 30);
+        // this.sprite.endFill();
+
+        app.stage.addChild(this.Animation);
+    }
+
+    update(enemies){
+        if(this.active){
+            this.action(enemies);
+        }
+    }
+
+    action(enemies){
+        if(this.name = 'WaveStorm'){
+            this.scale+=0.2;
+            this.radius+=2;
+            this.Animation.x = character.sprite.x + character.sprite.width/5;
+            this.Animation.y = character.sprite.y + character.sprite.height/5;
+            this.Animation.scale.set(this.scale, this.scale);
+            character.AttackPower = 100;
+            // console.log(this.Animation);
+        }
+
+        if(this.name = 'FlameBall'){
+            console.log('FlameBall');
+        }
+        this.enemyTouch(enemies);
+    }
+
+    enemyTouch(enemies){
+        // if (type === 'r') {
+        //     // Calculate the distance between the centers
+        //     const distanceX = this.Animation.x - character.sprite.x;
+        //     const distanceY = this.Animation.y - character.sprite.y;
+        //     const distance = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY));
+        //     // console.log("power: ", distance, "r: ", this.radius);
+        //     // Check if the distance is less than the sum of the radii
+        //     if (distance < this.radius) {
+        //         // alert(true);
+        //         // console.log("hi");
+        //     } 
+        //     // else {
+        //     //     // alert(false);
+        //     //     // console.log("Not overlapping");
+        //     // }
+        // }
+
+        // if((this.Animation.x+this.Animation.width/2)-(this.Animation.width*0.1) >= character.sprite.x && // right
+        //     (this.Animation.x-this.Animation.width/2)-(this.Animation.width*0.1) <= character.sprite.x+character.sprite.width && //left
+        //     (this.Animation.y+this.Animation.height/2)-(this.Animation.height*0.1) >= character.sprite.y && //top
+        //     (this.Animation.y-this.Animation.height/2)-(this.Animation.height*0.1) <= character.sprite.y+character.sprite.height/2 // bottom
+        //         ){
+        //             alert("hi");
+        //         }
+
+        for (let i=0; i<enemies.length; i++) {
+            const enemy = enemies[i];
+            if ((this.Animation.x+this.Animation.width/2)-(this.Animation.width*0.04) >= enemy.sprite.x && // right
+            (this.Animation.x-this.Animation.width/2)-(this.Animation.width*0.04) <= enemy.sprite.x+enemy.sprite.width && //left
+            (this.Animation.y+this.Animation.height/2)-(this.Animation.height*0.04) >= enemy.sprite.y && //top
+            (this.Animation.y-this.Animation.height/2)-(this.Animation.height*0.04) <= enemy.sprite.y+enemy.sprite.height/2) {
+                enemy.health -= character.AttackPower;
+                if(enemy.health <= 0){
+                    app.stage.removeChild(enemy.sprite);
+                    app.stage.removeChild(enemy.HealthText);
+                    enemies.splice(i, 1);
+                    // Optionally, you may want to remove the obstacle from the stage
+                    // app.stage.removeChild(obstacle.sprite);
+                    break;
+                }
+            }
+        }
     }
 }
 
@@ -1268,6 +1374,8 @@ function visibility(enemies, obstacles, platforms, bricks, background, clouds){
 var FPS_setter = 15; // 1000/40 = 25 fps
 var times = 0;
 
+p = new PowerUp(app, 'WaveStorm', 'obstacle1.png', 300, 300);
+
 //main loop
 app.ticker.add((delta) => {
     if(delta > 2){
@@ -1301,10 +1409,10 @@ app.ticker.add((delta) => {
         if(character.sprite.x >= levels[level].endLevel && character.starCount >= levels[level].min_stars){
             character.starCount = 0;
             level++;
-            character.knifeCount+=3;
-            change_level();
             character.sprite.x = levels[level].character_init_position.x;
             character.sprite.y = levels[level].character_init_position.y;
+            character.knifeCount+=3;
+            change_level();
         }
 
         levels[level].endLevel -= character.run_speed;
@@ -1387,6 +1495,7 @@ app.ticker.add((delta) => {
         enemy.update(levels[level].platforms, levels[level].bricks);
     }
 
+    p.update(levels[level].enemies);
 
     // key presses
     if(keys['x'] || keys['X']){
@@ -1396,6 +1505,10 @@ app.ticker.add((delta) => {
     else{
         character.run_speed = 10;
         character.CurrentAnimation.animationSpeed = 0.4;
+    }
+
+    if(keys['w'] || keys['W']){
+        p.active = true;
     }
 
     if (keys[' '] || keys['ArrowUp']) {
