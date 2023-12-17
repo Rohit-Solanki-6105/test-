@@ -1555,13 +1555,15 @@ app.ticker.add((delta) => {
             character.isRunning = true;
             character.isStanding = false;
         }
-    } else if (!keys['ArrowRight'] && !keys['ArrowLeft']) {
+    } else if (!keys['ArrowRight'] && !keys['ArrowLeft'] && !character.jumping) {
+        if(!character.isStanding){
             // If no movement keys are pressed, set the standing animation
-        character.CurrentAnimation.textures = character.StandImages;
-        character.CurrentAnimation.play();
-        character.CurrentAnimation.loop = true;
-        character.isRunning = false;
-        character.isStanding = true;
+            character.CurrentAnimation.textures = character.StandImages;
+            character.CurrentAnimation.play();
+            character.CurrentAnimation.loop = true;
+            character.isRunning = false;
+            character.isStanding = true;
+        }
     }
     
 
