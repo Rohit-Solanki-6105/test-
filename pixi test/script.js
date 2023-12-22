@@ -155,6 +155,27 @@ class Character {
         // this.ThrowSprite = new PIXI.AnimatedSprite(this.ThrowImages);
         // this.isThrowing = false;
         // this.jumping = false;
+
+        // ----------Attack
+        this.Ah = 445;
+        this.Aw = 536;
+
+        this.attackTexture = new PIXI.BaseTexture.from('character_sprites/attack_frames.png');
+        this.AttackImages = [
+            new PIXI.Texture(this.attackTexture, new PIXI.Rectangle(0 * this.Aw, 0, this.Aw, this.Ah)),
+            new PIXI.Texture(this.attackTexture, new PIXI.Rectangle(1 * this.Aw, 0, this.Aw, this.Ah)),
+            new PIXI.Texture(this.attackTexture, new PIXI.Rectangle(2 * this.Aw, 0, this.Aw, this.Ah)),
+            new PIXI.Texture(this.attackTexture, new PIXI.Rectangle(3 * this.Aw, 0, this.Aw, this.Ah)),
+            new PIXI.Texture(this.attackTexture, new PIXI.Rectangle(4 * this.Aw, 0, this.Aw, this.Ah)),
+            new PIXI.Texture(this.attackTexture, new PIXI.Rectangle(5 * this.Aw, 0, this.Aw, this.Ah)),
+            new PIXI.Texture(this.attackTexture, new PIXI.Rectangle(6 * this.Aw, 0, this.Aw, this.Ah)),
+            new PIXI.Texture(this.attackTexture, new PIXI.Rectangle(7 * this.Aw, 0, this.Aw, this.Ah)),
+            new PIXI.Texture(this.attackTexture, new PIXI.Rectangle(8 * this.Aw, 0, this.Aw, this.Ah)),
+            new PIXI.Texture(this.attackTexture, new PIXI.Rectangle(9 * this.Aw, 0, this.Aw, this.Ah)),
+        ];
+        this.isAttacking = false;
+        // this.JumpSprite = new PIXI.AnimatedSprite(this.JumpImages);
+        // this.jumping = false;
         
         // -------- sprite for current animation --------
         this.CurrentAnimation = this.StandSprite;
@@ -251,17 +272,29 @@ class Character {
             }
         }
 
-        for (const enemy of enemies) {
+        for (let i = 0; i < enemies.length; i++) {
+            const enemy = enemies[i];
             if (this.sprite.x+this.sprite.width/2 >= enemy.sprite.x && // right
             this.sprite.x-this.sprite.width/2 <= enemy.sprite.x+enemy.sprite.width && //left
             this.sprite.y+this.sprite.height/2 >= enemy.sprite.y && //top
             this.sprite.y-this.sprite.height/2 <= enemy.sprite.y+enemy.sprite.height/2) {
-                this.decreaseLife(enemy.lifeDecrease); // Adjust the amount to decrease life as needed
                 // alert("hi")
                 // Toggle the blinking effect
-                this.isBlinking = true;
-                this.blinkCounter = 0;
                 
+                
+                if(this.AttackPower == 0){
+                    this.decreaseLife(enemy.lifeDecrease); // Adjust the amount to decrease life as needed
+                    this.isBlinking = true;
+                    this.blinkCounter = 0;
+                } else{
+                    if(enemy.health <= 0){
+                        app.stage.removeChild(enemy.HealthText);
+                        app.stage.removeChild(enemy.sprite);
+                        enemies.splice(i, 1);
+                    }else{
+                        enemy.health -= this.AttackPower;
+                    }
+                }
                 // Optionally, you may want to remove the obstacle from the stage
                 // app.stage.removeChild(obstacle.sprite);
                 break;
@@ -639,6 +672,7 @@ class Knife {
                 // Remove the knife from the stage when it's not active
                 this.app.stage.removeChild(this.sprite);
             }
+            character.AttackPower = 25;
         }
         // else{
         //     this.sprite.visibile = false;
@@ -929,7 +963,7 @@ class PowerUp{
 
     action(enemies){
         if(this.name = 'WaveStorm'){
-            this.scale+=0.2;
+            this.scale+=0.6;
             this.radius+=2;
             this.Animation.x = character.sprite.x + character.sprite.width/5;
             this.Animation.y = character.sprite.y + character.sprite.height/5;
@@ -1040,7 +1074,9 @@ class Collector{
             character.lifeNumber++;
         }
         if(this.name == 'health'){
-            character.decreaseLife(-20);
+            if(!(character.currentLife >= 100)){
+                character.decreaseLife(-20);
+            }
         }
 
         if(this.name == 'knife'){
@@ -1061,8 +1097,7 @@ const app = new PIXI.Application({
 
 document.body.appendChild(app.view);
 
-
-let level = 2;
+let level = 1;
 const levels = {
     1:{
         endLevel: 200,
@@ -1533,6 +1568,21 @@ app.ticker.add((delta) => {
         }
     }
 
+    if(keys['d'] || keys['D']){
+        if(!character.isAttacking){
+            character.isAttacking = true;
+            character.CurrentAnimation.textures = character.AttackImages;
+            character.CurrentAnimation.play();
+            character.CurrentAnimation.loop = true;
+            character.isStanding = false;
+            character.isRunning = false;
+            character.AttackPower = 50;
+        }
+    } else{
+        character.isAttacking = false;
+        character.AttackPower = 0;
+    }
+
     // running, standing
     if (keys['ArrowRight']) {
         character.run_forward();
@@ -1555,7 +1605,7 @@ app.ticker.add((delta) => {
             character.isRunning = true;
             character.isStanding = false;
         }
-    } else if (!keys['ArrowRight'] && !keys['ArrowLeft'] && !character.jumping) {
+    } else if (!keys['ArrowRight'] && !keys['ArrowLeft'] && !character.jumping && !character.isAttacking) {
         if(!character.isStanding){
             // If no movement keys are pressed, set the standing animation
             character.CurrentAnimation.textures = character.StandImages;
