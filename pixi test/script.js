@@ -1582,17 +1582,17 @@ app.ticker.add((delta) => {
         }
     }
     
-    if(keys['a']){
-        // character.throwKnife();
-        if(character.knifeCount > 0){
-            if(!character.isThrowing){
-                character.isThrowing = true;
-                character.CurrentAnimation.textures = character.ThrowImages;
-                character.CurrentAnimation.loop = false;
-                character.CurrentAnimation.play();
-            }
-        }
-    }
+    // if(keys['a']){
+    //     // character.throwKnife();
+    //     if(character.knifeCount > 0){
+    //         if(!character.isThrowing){
+    //             character.isThrowing = true;
+    //             character.CurrentAnimation.textures = character.ThrowImages;
+    //             character.CurrentAnimation.loop = false;
+    //             character.CurrentAnimation.play();
+    //         }
+    //     }
+    // }
 
     if(keys['d'] || keys['D']){
         if(!character.isAttacking){
