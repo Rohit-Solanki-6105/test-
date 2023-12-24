@@ -176,6 +176,24 @@ class Character {
         this.isAttacking = false;
         // this.JumpSprite = new PIXI.AnimatedSprite(this.JumpImages);
         // this.jumping = false;
+
+        // ---------- jump attack---------
+        this.JAh = 520;
+        this.JAw = 504;
+
+        this.jump_attackTexture = new PIXI.BaseTexture.from('character_sprites/jump_attack_frames.png');
+        this.Jump_AttackImages = [
+            new PIXI.Texture(this.jump_attackTexture, new PIXI.Rectangle(0 * this.JAw, 0, this.JAw, this.JAh)),
+            new PIXI.Texture(this.jump_attackTexture, new PIXI.Rectangle(1 * this.JAw, 0, this.JAw, this.JAh)),
+            new PIXI.Texture(this.jump_attackTexture, new PIXI.Rectangle(2 * this.JAw, 0, this.JAw, this.JAh)),
+            new PIXI.Texture(this.jump_attackTexture, new PIXI.Rectangle(3 * this.JAw, 0, this.JAw, this.JAh)),
+            new PIXI.Texture(this.jump_attackTexture, new PIXI.Rectangle(4 * this.JAw, 0, this.JAw, this.JAh)),
+            new PIXI.Texture(this.jump_attackTexture, new PIXI.Rectangle(5 * this.JAw, 0, this.JAw, this.JAh)),
+            new PIXI.Texture(this.jump_attackTexture, new PIXI.Rectangle(6 * this.JAw, 0, this.JAw, this.JAh)),
+            new PIXI.Texture(this.jump_attackTexture, new PIXI.Rectangle(7 * this.JAw, 0, this.JAw, this.JAh)),
+            new PIXI.Texture(this.jump_attackTexture, new PIXI.Rectangle(8 * this.JAw, 0, this.JAw, this.JAh)),
+            new PIXI.Texture(this.jump_attackTexture, new PIXI.Rectangle(9 * this.JAw, 0, this.JAw, this.JAh)),
+        ];
         
         // -------- sprite for current animation --------
         this.CurrentAnimation = this.StandSprite;
@@ -244,6 +262,8 @@ class Character {
         if (!onGround) {
             this.isJumping = true;
             this.velocityY+=0.3;
+        } else{
+            this.isJumping = false;
         }
 
         // Update character's position
@@ -1548,10 +1568,16 @@ app.ticker.add((delta) => {
 
     if (keys[' '] || keys['ArrowUp']) {
         character.jump();
-        if(!character.jumping){
+        if(!character.jumping && !character.isAttacking){
             character.jumping = true;
             character.CurrentAnimation.textures = character.JumpImages;
             character.CurrentAnimation.loop = false;
+            character.CurrentAnimation.play();
+        }
+        else if(!character.jumping && character.isAttacking){
+            character.jumping = true;
+            character.CurrentAnimation.textures = character.Jump_AttackImages;
+            character.CurrentAnimation.loop = true;
             character.CurrentAnimation.play();
         }
     }
