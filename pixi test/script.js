@@ -1189,7 +1189,7 @@ const levels = {
 
     },
 
-    2:{
+  2:{
         endLevel: 200,
         
         background: new Background(app, 1.5, 'side_fuji5.jpg'),
@@ -1204,19 +1204,6 @@ const levels = {
         platforms: [
             //  new Platform(app, 290,390,20,100,'plat.png'),//top1st
             new Platform(app,    0, 710, 30, 160, 'plat.png'),//bottom1st
-            // new Platform(app,  320, 650,90,70,'plat.png'),//pillar 1
-            // new Platform(app,  590, 550,200,70,'plat.png'),//pillar 2
-            // new Platform(app,  870, 440,300,70,'plat.png'),//pillar3
-            // new Platform(app, 1150, 380,380,70,'plat.png'),//pillar4
-            // new Platform(app, 1450, 480,330,70,'plat.png'),//pillar5
-            // new Platform(app, 1780,390,400,70,'plat.png'),//pillar6
-            // new Platform(app, 2100,310,430,70,'plat.png'),//pillar7
-            // new Platform(app, 2450,270,460,70,'plat.png'),//pillar8
-            // new Platform(app, 2800,220,510,70,'plat.png'),//pillar9
-            // new Platform(app, 4100,630,100,70,'plat.png'),//pillar10
-            // new Platform(app, 4350,550,190,70,'plat.png'),//pillar11
-            // new Platform(app, 4600,440,300,70,'plat.png'),//pillar12
-            // new Platform(app, 4900,310,440,70,'plat.png'),//pillar13
             new Platform(app, 3300,710,20,600,'plat.png'),//bottom2nd
             new Platform(app, 5200,350,20,1000,'plat.png'),//bottom3rd
             // Add more platforms as needed
@@ -1238,29 +1225,32 @@ const levels = {
         ],
 
         bricks: [
-            new Brick(app,    0, 710, 30, 260, 'plat.png'),//bottom1st
-            new Brick(app,  370, 650,90,70,'plat.png'),//pillar 1
-            new Brick(app,  170, 440,100,70,'plat.png'),//pillar3
+            
+            new Brick(app,    0, 710, 30,260,'plat.png'),//bottom1st
+            new Brick(app,  370, 650,90,70, 'plat.png'),//pillar 1
             new Brick(app,  590, 550,200,70,'plat.png'),//pillar 2
+            new Brick(app,  870, 440,300,70,'plat.png'),//pillar3
             new Brick(app, 1450, 480,330,70,'plat.png'),//pillar5
             new Brick(app, 1150, 380,380,70,'plat.png'),//pillar4
-            new Brick(app, 2100,310,430,70,'plat.png'),//pillar7
-            new Brick(app, 1780,390,400,70,'plat.png'),//pillar6
-            new Brick(app, 2800,220,510,70,'plat.png'),//pillar9
-            new Brick(app, 2450,270,460,70,'plat.png'),//pillar8
-            new Brick(app, 4350,550,190,70,'plat.png'),//pillar11
-            new Brick(app, 4100,630,100,70,'plat.png'),//pillar10
-            new Brick(app, 4900,310,440,70,'plat.png'),//pillar13
-            new Brick(app, 4600,440,300,70,'plat.png'),//pillar12
-            new Brick(app, 5200,350,20,1000,'plat.png'),//bottom3rd
-            new Brick(app, 3300,710,20,600,'plat.png'),//bottom2nd
+            new Brick(app, 2100,310,430,70, 'plat.png'),//pillar7
+            new Brick(app, 1780,390,400,70, 'plat.png'),//pillar6
+            new Brick(app, 2800,220,510,70, 'plat.png'),//pillar9
+            new Brick(app, 2450,270,460,70, 'plat.png'),//pillar8
+            new Brick(app, 4350,550,190,70, 'plat.png'),//pillar11
+            new Brick(app, 4100,630,100,70, 'plat.png'),//pillar10
+            new Brick(app, 4900,310,440,70, 'plat.png'),//pillar13
+            new Brick(app, 4600,440,300,70, 'plat.png'),//pillar12
+            new Brick(app, 3300, 600, 110, 50, 'brick.png'),//block1
+            new Brick(app, 5200,350,20,2000,'plat.png'),//bottom3rd
+            new Brick(app, 3300,710,20,600, 'plat.png'),//bottom2nd
             // new Brick(app,3300, 600, 110, 50,'brick.png',false,500),
         ],
 
         collectors: [
             // new Collector(app, 400, 400, 30, 30, "knife", "knife.png"),
-            new Collector(app, 3380, 660, 30, 30, "Life", "life.png"),
+            new Collector(app, 3450, 660, 30, 30, "Life", "life.png"),
             new Collector(app, 1950, 200, 30, 30, "health", "health.png"),
+            new Collector(app, 6500,310,20,20,"star",'star.png'),//bottom3rd
             new Collector(app, 800, 400, 30, 30, "star", "star.png"),
             new Collector(app,2300,160,30,30,"star",'star.png'),
         ],
