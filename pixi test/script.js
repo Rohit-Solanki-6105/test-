@@ -993,7 +993,10 @@ class PowerUp{
     update(enemies){
         this.numberText.text = character.powercount.WaveStorm;
         if(this.active){
+            this.Animation.visible = true;
             this.action(enemies);
+        } else{
+            this.Animation.visible = false;
         }
     }
 
@@ -1008,11 +1011,13 @@ class PowerUp{
             console.log("just")
             character.AttackPower = 100;
             console.log("helo")
-            if(this.Animation.scale.x > 10){
+            if(this.Animation.height > innerHeight){
+                this.scale = 2;
                 this.active = false;
                 this.Animation.scale.x = 1;
                 this.Animation.scale.y = 1;
                 console.log(this.Animation.scale.x , this.Animation.scale.y);
+                character.powercount.WaveStorm--;
                 // alert("hi");
             }
             // if(this.Animation.height >= window.innerHeight){
