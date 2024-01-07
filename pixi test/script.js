@@ -67,7 +67,9 @@ class Character {
         
         app.stage.addChild(this.knifeText);
 
-
+        this.powercount = {
+            WaveStorm: 5,
+        };
 
         //------------------ animations---------------------
 
@@ -973,28 +975,62 @@ class PowerUp{
         // this.sprite.endFill();
 
         app.stage.addChild(this.Animation);
+
+        this.numberText = new PIXI.Text(`x${character.powercount.WaveStorm}`, {
+            fontSize: 25,
+            fill: 0x000000,
+            align: 'center'
+        });
+        
+        // this.numberText.x = this.Bx+10;
+        // this.numberText.y = this.By;
+        this.numberText.x = this.banner_img.x + 30;
+        this.numberText.y = this.banner_img.y;
+
+        app.stage.addChild(this.numberText);
     }
 
     update(enemies){
+        this.numberText.text = character.powercount.WaveStorm;
         if(this.active){
             this.action(enemies);
         }
     }
 
     action(enemies){
-        if(this.name = 'WaveStorm'){
+        if(this.name = 'WaveStorm' && character.powercount.WaveStorm > 0){
             this.scale+=0.6;
             this.radius+=2;
             this.Animation.x = character.sprite.x + character.sprite.width/5;
             this.Animation.y = character.sprite.y + character.sprite.height/5;
             this.Animation.scale.set(this.scale, this.scale);
+            
+            console.log("just")
             character.AttackPower = 100;
+            console.log("helo")
+            if(this.Animation.scale.x > 10){
+                this.active = false;
+                this.Animation.scale.x = 1;
+                this.Animation.scale.y = 1;
+                console.log(this.Animation.scale.x , this.Animation.scale.y);
+                // alert("hi");
+            }
+            // if(this.Animation.height >= window.innerHeight){
+                // this.Animation.height = this.height;
+                // this.Animation.width = this.width;
+                // console.log("hi")
+                // // this.Animation.scale.set(1, 1);
+                // this.active = false;
+                // character.powercount.WaveStorm--;
+            // }
+            // character.powercount.WaveStorm-=1;
+            // alert(character.powercount.WaveStorm)
             // console.log(this.Animation);
         }
 
-        if(this.name = 'FlameBall'){
-            console.log('FlameBall');
-        }
+        // if(this.name == 'FlameBall'){
+        //     console.log('FlameBall');
+        // }
         this.enemyTouch(enemies);
     }
 
@@ -1106,6 +1142,11 @@ class Collector{
         if(this.name == 'star'){
             character.starCount++;
         }
+
+        if(this.name == 'WaveStorm'){
+            character.powercount.WaveStorm++;
+            // character.powercount.WaveStorm++;
+        }
     }
 }
 
@@ -1189,7 +1230,7 @@ const levels = {
 
     },
 
-  2:{
+    2:{
         endLevel: 200,
         
         background: new Background(app, 1.5, 'side_fuji5.jpg'),
@@ -1419,13 +1460,16 @@ function visibility(enemies, obstacles, platforms, bricks, background, clouds){
 var FPS_setter = 15; // 1000/40 = 25 fps
 var times = 0;
 
-p = new PowerUp(app, 'WaveStorm', 'obstacle1.png', 300, 300);
+// p = new PowerUp(app, 'WaveStorm', 'obstacle1.png', 300, 300);
+p = new PowerUp(app, 'WaveStorm', 'obstacle1.png', 200, 100);
 
 //main loop
 app.ticker.add((delta) => {
     if(delta > 2){
         delta = 0;
     }
+
+    // console.log(p.active);
     var timeNow = (new Date()).getTime();
     var timeDiff = timeNow - times;
     if(timeDiff < FPS_setter){
@@ -1552,9 +1596,6 @@ app.ticker.add((delta) => {
         character.CurrentAnimation.animationSpeed = 0.4;
     }
 
-    if(keys['w'] || keys['W']){
-        p.active = true;
-    }
 
     if (keys[' '] || keys['ArrowUp']) {
         character.jump();
@@ -1667,6 +1708,11 @@ document.addEventListener('keydown', (event) => {
             // character.throwKnife();
             knife.throwKnife();
         }
+    }
+    
+    if(keys['w'] || keys['W']){
+        p.active = true;
+        // character.powercount.WaveStorm--;
     }
 });
 
