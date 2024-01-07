@@ -1,3 +1,11 @@
+const game_audio = {
+    gameover_audio: new Audio('audio/game_over.mp3'),
+    finalRound_audio: new Audio('audio/final_round.mp3'),
+    you_lose_audio: new Audio('audio/you_lose.mp3'),
+    you_win_audio: new Audio('audio/you_win.mp3'),
+    finalLevel_it: 1,
+};
+
 class Character {
     constructor(app, x, y) {
         this.sprite = new PIXI.Sprite(PIXI.Texture.from('transparent.png'));
@@ -483,8 +491,10 @@ class Character {
 
         if (this.currentLife <= 0 && this.lifeNumber > 0) {
             this.lifeNumber--;
-    
             if (this.lifeNumber > 0) {
+                game_audio.you_lose_audio.currentTime = 0;
+                game_audio.you_lose_audio.play();
+                
                 this.sprite.x = levels[level].character_init_position.x;
                 this.sprite.y = levels[level].character_init_position.y;
                 // Player has more lives left
@@ -530,6 +540,9 @@ class Character {
             } else {
                 // No more lives, trigger game over
                 this.gameover();
+                
+                game_audio.gameover_audio.currentTime = 0;
+                game_audio.gameover_audio.play();
             }
         }
 
@@ -554,6 +567,7 @@ class Character {
         gameOverText.x = app.screen.width / 2 - gameOverText.width / 2;
         gameOverText.y = app.screen.height / 2 - gameOverText.height / 2;
         app.stage.addChild(gameOverText);
+        
     }
 
     // throwKnife() {
@@ -1340,7 +1354,7 @@ function change_level(){
             // this.sprite.x = 100;
         }, 2000);
     }
-    else{
+    else {
         const blackOverlay = new PIXI.Graphics();
         blackOverlay.beginFill(0x000000);
         blackOverlay.drawRect(0, 0, app.screen.width, app.screen.height);
@@ -1367,6 +1381,18 @@ function change_level(){
             // this.sprite.visible = true;
             // this.sprite.x = 100;
         }, 2000);
+    }
+
+    if(level == finalLevel){
+        if(game_audio.finalLevel_it > 0){
+            game_audio.finalLevel_it--;
+            game_audio.finalRound_audio.currentTime = 0;
+            game_audio.finalRound_audio.play();
+        }
+    }
+    else if(level < finalLevel){
+        game_audio.you_win_audio.currentTime = 0;
+        game_audio.you_win_audio.play();
     }
 }
 
@@ -1470,6 +1496,9 @@ p = new PowerUp(app, 'WaveStorm', 'obstacle1.png', 200, 100);
 
 //main loop
 app.ticker.add((delta) => {
+    
+    // Make sure the animated sprite is being updated
+    app.renderer.render(app.stage);
     if(delta > 2){
         delta = 0;
     }
@@ -1482,11 +1511,7 @@ app.ticker.add((delta) => {
     }
     times = timeNow;
     
-    // console.log(delta)
-    if(level > finalLevel){
-        change_level();
-        return;
-    }
+    
     if (isPaused) {
         return; // Exit the function if the game is paused
     }
@@ -1503,10 +1528,15 @@ app.ticker.add((delta) => {
         if(character.sprite.x >= levels[level].endLevel && character.starCount >= levels[level].min_stars){
             character.starCount = 0;
             level++;
+            if(!levels[level]){
+                change_level();
+                return;
+            } else{
+                change_level();
+            }
             character.sprite.x = levels[level].character_init_position.x;
             character.sprite.y = levels[level].character_init_position.y;
             character.knifeCount+=3;
-            change_level();
         }
 
         levels[level].endLevel -= character.run_speed;
@@ -1679,8 +1709,6 @@ app.ticker.add((delta) => {
     }
     
 
-    // Make sure the animated sprite is being updated
-    app.renderer.render(app.stage);
 });
 
 
